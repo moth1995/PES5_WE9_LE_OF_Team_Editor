@@ -4,24 +4,40 @@ from tkinter import messagebox
 from tkinter import ttk
 from tkinter import filedialog
 import sys
+import os
+
 from COFPES_OF_Editor_5.editor.option_file import OptionFile
 from COFPES_OF_Editor_5.editor.utils.common_functions import bytes_to_int, zero_fill_right_shift, to_int, to_byte
 
 from getnames import get_of_names
 from swap_teams import swap_teams_data
 from swap_teams import encrypt_and_save
-from player_data import get_stats, set_value
+from player_data import get_stats, set_value, get_value
 from export_csv import write_csv
+from import_csv import load_csv
+
 
 def export_all_to_csv():
     players_ids=[*range(1, 5000, 1)]+[*range(32768, 32952, 1)]
     all_data=[]
     for player in players_ids:
         all_data.append(get_stats(player,of))
-    if write_csv("players",all_data):
-        messagebox.showinfo(title=appname,message="CSV file created!")        
+    new_file = filedialog.asksaveasfile(mode='w', filetypes=[('All tyes(*.csv)', '*.csv')], defaultextension=".csv")
+    if new_file is None: # asksaveasfile return `None` if dialog closed with "cancel".
+        return
+    if write_csv(new_file.name,all_data):
+        messagebox.showinfo(title=appname,message="CSV file created!")
     else:
         messagebox.showerror(title=appname,message="Error while creating CSV file, please run as admin")
+
+def import_all_from_csv():
+    csv_file = filedialog.askopenfilename(initialdir=".",title="Select your CSV file", filetypes=(("CSV files","*.csv"),("All files", "*")))
+    if csv_file!="":
+        if load_csv(of, csv_file):
+            of.save_option_file()
+            messagebox.showinfo(title=appname,message="CSV file imported and saved!")
+        else:
+            messagebox.showerror(title=appname,message="Error while importing CSV file")
 
 
 #this is a function to update the list in the combobox
@@ -62,8 +78,9 @@ root.geometry('%dx%d+%d+%d' % (w, h, x, y))
 #Once it start it will ask to select the option file
 filename=""
 temp_file=""
-#filename = filedialog.askopenfilename(initialdir=".",title="Select your option file", filetypes=(("KONAMI-WIN32PES5OPT","KONAMI-WIN32PES5OPT"),("KONAMI-WIN32WE9UOPT","KONAMI-WIN32WE9UOPT"),("KONAMI-WIN32WE9KOPT","KONAMI-WIN32WE9KOPT")))
-filename = "KONAMI-WIN32PES5OPT"
+filename = filedialog.askopenfilename(initialdir=".",title="Select your option file", filetypes=(("KONAMI-WIN32PES5OPT","KONAMI-WIN32PES5OPT"),("KONAMI-WIN32WE9UOPT","KONAMI-WIN32WE9UOPT"),("KONAMI-WIN32WE9KOPT","KONAMI-WIN32WE9KOPT")))
+#filename = "KONAMI-WIN32PES5OPT"
+#filename = r"C:\Users\marco\Documents\KONAMI\Pro Evolution Soccer 5\save\folder1\KONAMI-WIN32PES5OPT"
 if filename!="":
     of = OptionFile(filename)
     temp_file = "temp.bin"
@@ -72,6 +89,25 @@ if filename!="":
         #print("Temporary file created")
 else:
     root.destroy()
+
+#below is how to read the value for all players, i compare this to the mdb file exported from dkz studio
+'''
+players_ids=[*range(1, 5000, 1)]+[*range(32768, 32952, 1)]
+all_data=[]
+for player in players_ids:
+    all_data.append(get_value(of,player,52, 1, 10, "boot type"))
+print(all_data)
+'''
+#get_value(of, 1, 0, 0 , 10, "boot type") #could be 12 boots maybe 51 offset
+
+#print(get_value(of, 1, 7, 0, 127, "Attack"))
+#set_value(of, 1, 7, 0, 127, 31)
+#print(get_value(of, 1, 7, 0, 127, "Attack"))
+
+#load_csv(of, 'players.csv')
+#print(get_value(of, 1, 7, 0, 127, "Attack"))
+#print(of.file_location)
+#of.save_option_file()
 
 
 tabs_container=ttk.Notebook(root)
@@ -98,6 +134,7 @@ thanks_lbl=Label(swap_teams_tab, text="Thanks to PeterC10 for python de/encrypt 
 
 #wip_lbl=Label(export_team_tab, text="Still working on this section, soon there will be something to test")
 create_csv_btn=Button(export_team_tab, text="Create CSV", command=lambda: export_all_to_csv())
+import_csv_btn=Button(export_team_tab, text="Import CSV", command=lambda: import_all_from_csv())
 
 
 #Swap team tab placing
@@ -114,7 +151,8 @@ thanks_lbl.place(x=500, y=555)
 #Export team tab placing
 
 #wip_lbl.place(x=280, y=160)
-create_csv_btn.place(x=280, y=160)
+create_csv_btn.place(x=240, y=160)
+import_csv_btn.place(x=320, y=160)
 #Placing tabs and container in the root
 
 tabs_container.pack()
