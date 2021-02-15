@@ -1,58 +1,79 @@
 import os
 from COFPES_OF_Editor_5.editor.option_file import OptionFile
 
-def read_data(file_to_read,pos,grab):
+def read_data(array,pos,grab):
+    '''
     with open(file_to_read,'rb') as opened_file:
         opened_file.seek(pos,0)
         grabed_data=opened_file.read(grab)
-    return grabed_data
+    '''
+    return array[pos : pos + grab]
 
-def encrypt_and_save(temp_file,of):
-    if temp_file=="":
-        return False
+def encrypt_and_save(of):
     try:
-        with open(temp_file, "r+b") as binary_file:    
-            #antes de guardar el archivo
-            #binary_file.seek(0,0)
-            of.data = bytearray(binary_file.read())
-            # Save/encrypt the option file
-            #print("Saving option file...")
-            of.save_option_file()
-            #print("Option file saved.")
-            #os.remove("temp.bin")
+        #print("Saving option file...")
+        of.save_option_file()
+        #print("Option file saved.")
         return True
     except EnvironmentError: # parent of IOError, OSError *and* WindowsError where available
         return False
 
 
-def swap_teams_data(temp_file,team_a_id,team_b_id):
+def swap_teams_data(data,team_a_id,team_b_id):
     #print(type(team_a_id))
     #print(type(team_b_id))
     if team_a_id==team_b_id:
         return False
-    team_a_players_relink = read_data(temp_file,clubs_players_relink_offset+(team_a_id*clubs_players_relink_size),clubs_players_relink_size)
-    team_b_players_relink = read_data(temp_file,clubs_players_relink_offset+(team_b_id*clubs_players_relink_size),clubs_players_relink_size)
+    team_a_players_relink = read_data(data,clubs_players_relink_offset+(team_a_id*clubs_players_relink_size),clubs_players_relink_size)
+    team_b_players_relink = read_data(data,clubs_players_relink_offset+(team_b_id*clubs_players_relink_size),clubs_players_relink_size)
 
-    team_a_jersey_number = read_data(temp_file,clubs_jersey_number_offset+(team_a_id*clubs_jersey_number_size),clubs_jersey_number_size)
-    team_b_jersey_number = read_data(temp_file,clubs_jersey_number_offset+(team_b_id*clubs_jersey_number_size),clubs_jersey_number_size)
+    team_a_jersey_number = read_data(data,clubs_jersey_number_offset+(team_a_id*clubs_jersey_number_size),clubs_jersey_number_size)
+    team_b_jersey_number = read_data(data,clubs_jersey_number_offset+(team_b_id*clubs_jersey_number_size),clubs_jersey_number_size)
 
-    team_a_name=read_data(temp_file,clubs_names_offset+(team_a_id*clubs_names_distance),clubs_names_size)
-    team_b_name=read_data(temp_file,clubs_names_offset+(team_b_id*clubs_names_distance),clubs_names_size)
+    team_a_name=read_data(data,clubs_names_offset+(team_a_id*clubs_names_distance),clubs_names_size)
+    team_b_name=read_data(data,clubs_names_offset+(team_b_id*clubs_names_distance),clubs_names_size)
 
     #print(team_a_name.decode('utf8'))
     #print(team_b_name.decode('utf8'))
 
-    team_a_three_letter_name=read_data(temp_file,three_letter_clubs_name_offset+(team_a_id*clubs_names_distance),three_letter_clubs_name_size)
-    team_b_three_letter_name=read_data(temp_file,three_letter_clubs_name_offset+(team_b_id*clubs_names_distance),three_letter_clubs_name_size)
+    team_a_three_letter_name=read_data(data,three_letter_clubs_name_offset+(team_a_id*clubs_names_distance),three_letter_clubs_name_size)
+    team_b_three_letter_name=read_data(data,three_letter_clubs_name_offset+(team_b_id*clubs_names_distance),three_letter_clubs_name_size)
 
     #print(team_a_three_letter_name.decode('utf8'))
     #print(team_b_three_letter_name.decode('utf8'))
 
-    team_a_formation_data = read_data(temp_file,club_formation_data_offset+(team_a_id*team_formation_data_size),team_formation_data_size)
-    team_b_formation_data = read_data(temp_file,club_formation_data_offset+(team_b_id*team_formation_data_size),team_formation_data_size)
+    team_a_formation_data = read_data(data,club_formation_data_offset+(team_a_id*team_formation_data_size),team_formation_data_size)
+    team_b_formation_data = read_data(data,club_formation_data_offset+(team_b_id*team_formation_data_size),team_formation_data_size)
 
+    for i, byte in enumerate(team_a_players_relink):
+        data[clubs_players_relink_offset+(team_b_id*clubs_players_relink_size) + i] = byte
+    for i, byte in enumerate(team_b_players_relink):
+        data[clubs_players_relink_offset+(team_a_id*clubs_players_relink_size) + i] = byte
+
+    for i, byte in enumerate(team_a_jersey_number):
+        data[clubs_jersey_number_offset+(team_b_id*clubs_jersey_number_size) + i] = byte
+    for i, byte in enumerate(team_b_jersey_number):
+        data[clubs_jersey_number_offset+(team_a_id*clubs_jersey_number_size) + i] = byte
+
+    for i, byte in enumerate(team_a_name):
+        data[clubs_names_offset+(team_b_id*clubs_names_distance) + i] = byte
+    for i, byte in enumerate(team_b_name):
+        data[clubs_names_offset+(team_a_id*clubs_names_distance) + i] = byte
+
+
+    for i, byte in enumerate(team_a_three_letter_name):
+        data[three_letter_clubs_name_offset+(team_b_id*clubs_names_distance) + i] = byte
+    for i, byte in enumerate(team_b_three_letter_name):
+        data[three_letter_clubs_name_offset+(team_a_id*clubs_names_distance) + i] = byte
+
+    for i, byte in enumerate(team_a_formation_data):
+        data[club_formation_data_offset+(team_b_id*team_formation_data_size) + i] = byte
+    for i, byte in enumerate(team_b_formation_data):
+        data[club_formation_data_offset+(team_a_id*team_formation_data_size) + i] = byte
+
+    # Older method not needed anymore
     #Now we write our data in the temporary file to later save it to the encrypted OF
-
+    '''
     with open(temp_file, "r+b") as binary_file:
         #Here we swap players from team A to team B offsets location
         binary_file.seek(clubs_players_relink_offset+(team_b_id*clubs_players_relink_size),0)
@@ -85,6 +106,7 @@ def swap_teams_data(temp_file,team_a_id,team_b_id):
         binary_file.write(team_b_formation_data)
 
         #print("Temporary file changed")
+    '''
     return True
 
 #Offsets definition
