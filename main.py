@@ -22,18 +22,18 @@ def export_all_to_csv():
     all_data=[]
     for player in players_ids:
         all_data.append(get_stats(player,of))
-    new_file = filedialog.asksaveasfile(mode='w', filetypes=[('All tyes(*.csv)', '*.csv')], defaultextension=".csv")
-    if new_file is None: # asksaveasfile return `None` if dialog closed with "cancel".
+    root.new_file = filedialog.asksaveasfile(initialdir=".",title="Create your CSV file", mode='w', filetypes=(("CSV files","*.csv"),("All files", "*"))), defaultextension=".csv")
+    if root.new_file is None: # asksaveasfile return `None` if dialog closed with "cancel".
         return
-    if write_csv(new_file.name,all_data):
+    if write_csv(root.new_file.name,all_data):
         messagebox.showinfo(title=appname,message="CSV file created!")
     else:
         messagebox.showerror(title=appname,message="Error while creating CSV file, please run as admin")
 
 def import_all_from_csv():
-    csv_file = filedialog.askopenfilename(initialdir=".",title="Select your CSV file", filetypes=(("CSV files","*.csv"),("All files", "*")))
-    if csv_file!="":
-        if load_csv(of, csv_file):
+    root.csv_file = filedialog.askopenfilename(initialdir=".",title="Select your CSV file", filetypes=(("CSV files","*.csv"),("All files", "*")))
+    if root.csv_file!="":
+        if load_csv(of, root.csv_file):
             of.save_option_file()
             messagebox.showinfo(title=appname,message="CSV file imported and saved!")
         else:
@@ -76,13 +76,13 @@ y = (hs/2) - (h/2)
 # and where it is placed
 root.geometry('%dx%d+%d+%d' % (w, h, x, y))
 #Once it start it will ask to select the option file
-filename=""
+root.filename=""
 temp_file=""
-filename = filedialog.askopenfilename(initialdir=".",title="Select your option file", filetypes=(("KONAMI-WIN32PES5OPT","KONAMI-WIN32PES5OPT"),("KONAMI-WIN32WE9UOPT","KONAMI-WIN32WE9UOPT"),("KONAMI-WIN32WE9KOPT","KONAMI-WIN32WE9KOPT")))
-#filename = "KONAMI-WIN32PES5OPT"
-#filename = r"C:\Users\marco\Documents\KONAMI\Pro Evolution Soccer 5\save\folder1\KONAMI-WIN32PES5OPT"
-if filename!="":
-    of = OptionFile(filename)
+root.filename = filedialog.askopenfilename(initialdir=".",title="Select your option file", filetypes=(("KONAMI-WIN32PES5OPT","KONAMI-WIN32PES5OPT"),("KONAMI-WIN32WE9UOPT","KONAMI-WIN32WE9UOPT"),("KONAMI-WIN32WE9KOPT","KONAMI-WIN32WE9KOPT")))
+#root.filename = "KONAMI-WIN32PES5OPT"
+#root.filename = r"C:\Users\marco\Documents\KONAMI\Pro Evolution Soccer 5\save\folder1\KONAMI-WIN32PES5OPT"
+if root.filename!="":
+    of = OptionFile(root.filename)
     temp_file = "temp.bin"
     with open(temp_file, "wb") as binary_file:
         binary_file.write(of.data)
