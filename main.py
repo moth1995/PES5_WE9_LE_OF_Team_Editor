@@ -22,7 +22,7 @@ def export_all_to_csv():
     all_data=[]
     for player in players_ids:
         all_data.append(get_stats(player,of))
-    root.new_file = filedialog.asksaveasfile(initialdir=".",title="Create your CSV file", mode='w', filetypes=(("CSV files","*.csv"),("All files", "*"))), defaultextension=".csv")
+    root.new_file = filedialog.asksaveasfile(initialdir=".",title="Create your CSV file", mode='w', filetypes=(("CSV files","*.csv"),("All files", "*")), defaultextension=".csv")
     if root.new_file is None: # asksaveasfile return `None` if dialog closed with "cancel".
         return
     if write_csv(root.new_file.name,all_data):
