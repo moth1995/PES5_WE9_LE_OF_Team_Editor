@@ -126,7 +126,7 @@ def set_name(of, player_id, new_name):
     name_bytes_length = 32
     max_name_size = 15
     new_name = new_name[: max_name_size]
-    if (new_name.startswith("Unknown") or new_name.startswith("Edited") or new_name.startswith("Unused") or new_name == ""):
+    if (new_name == f"Unknown (ID: {player_id})" or new_name == f"Edited (ID: {player_id})" or new_name == f"Unused (ID: {player_id})" or new_name == ""):
         player_name_bytes=[0] * name_bytes_length
     else:
         player_name_bytes = [0] * name_bytes_length
