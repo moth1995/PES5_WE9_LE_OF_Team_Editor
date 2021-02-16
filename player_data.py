@@ -29,6 +29,15 @@ def get_value(of, player_id, offset, shift, mask, stat_name):
     #print(j)
     return j
 
+def get_raw_value(of, player_id, offset, stat_name):
+    i = start_address + 48 + player_id * 124 + offset
+    if player_id > last_player_id:
+        i = start_address_edited + (player_id - first_edited_id) * 124 + offset
+    #print(i)
+    #print("{0:x}".format(of.data[i]))
+    return(of.data[i])
+
+
 def get_boot_type(of, player_id, offset, stat_name):
     # Thanks to Pato_lucas18 for giving me this function, it was more than useful
     i = start_address + 48 + player_id * 124 + offset
@@ -268,9 +277,13 @@ def get_stats(player_id, of):
     player_nation = nationalities[get_value(of, player_id, 63, 2, 127, "Nationality")]
     player_callName = get_value(of, player_id, 1, 0, 65535, "Callname ID")
     player_statEdited = get_value(of, player_id, 39, 7, 1, "Stat Edited")
-    #player_boot_type = get_value(of, player_id, 51, 0, 9, "boot type")
+    #player_boot_type = get_value(of, player_id, 51, 1, 8, "boot type")
+    #player_boot_colour = get_value(of, player_id, 51, 0, 3, "boot type")
     #player_boot_type, player_boot_colour = get_boot_type(of, player_id, 51, "Boot type and colour")
-
+    player_goal_c1 = get_value(of,player_id,85-48, 1, 127, "GOAL CELEBRATION 1")
+    player_goal_c2 = get_value(of,player_id,86-48, 0, 127, "GOAL CELEBRATION 2")
+    player_skin_colour = get_value(of,player_id,91-48,1, 3, "skin colour") + 1
+    #player_work_progress= get_raw_value(of,player_id,86-48, "work progress")
     return ([player_id, player_name, player_shirt_name, player_cbwL,player_gk ,player_cbwS ,player_cbt ,player_sb ,player_dm ,player_wb ,player_cm ,player_sm ,player_om ,
         player_wg ,player_ss ,player_cf ,player_regPos ,player_height ,player_foot ,player_favSide ,player_wfa ,player_wff ,player_attack ,player_defence ,player_balance ,
         player_stamina ,player_speed ,player_accel ,player_response ,player_agility ,player_dribAcc ,player_dribSpe ,player_sPassAcc ,player_sPassSpe ,player_lPassAcc ,
@@ -278,7 +291,7 @@ def get_stats(player_id, of):
         player_consistency ,player_gkAbil ,player_team ,player_condition ,player_statX ,player_drib ,player_dribKeep ,player_post ,player_posit ,player_offside ,player_linePos ,
         player_midShot ,player_scorer ,player_play ,player_pass ,player_bff ,player_pk ,player_k11 ,player_longThrow ,player_direct ,player_side ,player_centre ,player_outside ,
         player_man ,player_dLine ,player_slide ,player_cover ,player_gkKick ,player_keeperPK ,player_keeper11 ,player_injury ,player_dribSty ,player_freekick ,player_pkStyle ,
-        player_dkSty ,player_age ,player_weight ,player_nation ,player_callName ,player_statEdited])
+        player_dkSty ,player_age ,player_weight ,player_nation ,player_callName ,player_statEdited, player_goal_c1, player_goal_c2, player_skin_colour])
 
 
 start_address = 36872
