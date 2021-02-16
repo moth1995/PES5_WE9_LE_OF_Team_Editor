@@ -94,9 +94,9 @@ root.geometry('%dx%d+%d+%d' % (w, h, x, y))
 #Once it start it will ask to select the option file
 root.filename=""
 #temp_file=""
-root.filename = filedialog.askopenfilename(initialdir=".",title="Select your option file", filetypes=(("KONAMI-WIN32PES5OPT","KONAMI-WIN32PES5OPT"),("KONAMI-WIN32WE9UOPT","KONAMI-WIN32WE9UOPT"),("KONAMI-WIN32WE9KOPT","KONAMI-WIN32WE9KOPT")))
+#root.filename = filedialog.askopenfilename(initialdir=".",title="Select your option file", filetypes=(("KONAMI-WIN32PES5OPT","KONAMI-WIN32PES5OPT"),("KONAMI-WIN32WE9UOPT","KONAMI-WIN32WE9UOPT"),("KONAMI-WIN32WE9KOPT","KONAMI-WIN32WE9KOPT")))
 #root.filename = "KONAMI-WIN32PES5OPT"
-#root.filename = r"C:\Users\marco\Documents\KONAMI\Pro Evolution Soccer 5\save\folder1\KONAMI-WIN32PES5OPT"
+root.filename = r"C:\Users\marco\Documents\KONAMI\Pro Evolution Soccer 5\save\folder1\KONAMI-WIN32PES5OPT"
 if root.filename!="":
     of = OptionFile(root.filename)
     '''
@@ -110,13 +110,19 @@ else:
     root.destroy()
 
 #below is how to read the value for all players, i compare this to the mdb file exported from dkz studio
-'''
+
+#get_value(of,player,86-48, 0, 127, "GOAL CELEBRATION 2")
+#get_value(of,player,85-48, 1, 127, "GOAL CELEBRATION 1")
+
+
 players_ids=[*range(1, 5000, 1)]+[*range(32768, 32952, 1)]
 all_data=[]
 for player in players_ids:
-    all_data.append(get_value(of,player,52, 1, 10, "boot type"))
-print(all_data)
-'''
+    ##all_data.append(player)
+    all_data.append(get_value(of,player,91-48,1, 3, "skin colour")+1)
+
+#print (all_data[1228])
+
 #get_value(of, 1, 0, 0 , 10, "boot type") #could be 12 boots maybe 51 offset
 
 #print(get_value(of, 1, 7, 0, 127, "Attack"))
@@ -160,6 +166,8 @@ import_csv_btn=Button(csv_tab, text="Import CSV", command=lambda: import_all_fro
 
 decrypt_of_btn=Button(extra_tab, text="Decrypt", command=lambda: decrypt_btn_action())
 encrypt_of_btn=Button(extra_tab, text="Encrypt", command=lambda: encrypt_btn_action())
+stat_test_entry = Entry (extra_tab) 
+test_print_btn=Button(extra_tab, text="Print stat test!", command=lambda: print(all_data[int(stat_test_entry.get())+1]))
 
 
 #Swap team tab placing
@@ -183,7 +191,8 @@ import_csv_btn.place(x=320, y=160)
 
 decrypt_of_btn.place(x=240, y=160)
 encrypt_of_btn.place(x=320, y=160)
-
+stat_test_entry.place(x=200, y=70)
+test_print_btn.place(x=200, y=100)
 
 #Placing tabs and container in the root
 
