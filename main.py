@@ -117,9 +117,10 @@ else:
 
 players_ids=[*range(1, 5000, 1)]+[*range(32768, 32952, 1)]
 all_data=[]
-for player in players_ids:
+for player_id in players_ids:
     ##all_data.append(player)
-    all_data.append(get_value(of,player,91-48,1, 3, "skin colour")+1)
+    all_data.append(int(get_value(of,player_id,53,3, 0xFF, "face width"))+1)
+
 
 #print (all_data[1228])
 
@@ -167,7 +168,7 @@ import_csv_btn=Button(csv_tab, text="Import CSV", command=lambda: import_all_fro
 decrypt_of_btn=Button(extra_tab, text="Decrypt", command=lambda: decrypt_btn_action())
 encrypt_of_btn=Button(extra_tab, text="Encrypt", command=lambda: encrypt_btn_action())
 stat_test_entry = Entry (extra_tab) 
-test_print_btn=Button(extra_tab, text="Print stat test!", command=lambda: print(all_data[int(stat_test_entry.get())+1]))
+test_print_btn=Button(extra_tab, text="Print stat test!", command=lambda: print(all_data[int(stat_test_entry.get())-1]))
 
 
 #Swap team tab placing

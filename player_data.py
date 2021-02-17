@@ -29,14 +29,6 @@ def get_value(of, player_id, offset, shift, mask, stat_name):
     #print(j)
     return j
 
-def get_raw_value(of, player_id, offset, stat_name):
-    i = start_address + 48 + player_id * 124 + offset
-    if player_id > last_player_id:
-        i = start_address_edited + (player_id - first_edited_id) * 124 + offset
-    #print(i)
-    #print("{0:x}".format(of.data[i]))
-    return(of.data[i])
-
 
 def get_boot_type(of, player_id, offset, stat_name):
     # Thanks to Pato_lucas18 for giving me this function, it was more than useful
@@ -283,7 +275,27 @@ def get_stats(player_id, of):
     player_goal_c1 = get_value(of,player_id,85-48, 1, 127, "GOAL CELEBRATION 1")
     player_goal_c2 = get_value(of,player_id,86-48, 0, 127, "GOAL CELEBRATION 2")
     player_skin_colour = get_value(of,player_id,91-48,1, 3, "skin colour") + 1
-    #player_work_progress= get_raw_value(of,player_id,86-48, "work progress")
+    #thanks to evo-web's user mattmid for helping me with stats below
+    player_head_height = get_value(of,player_id,43, 3, 15, "head height") - 7
+    player_neck_width = get_value(of,player_id,44, 3, 15, "Neck Width") - 7
+    player_neck_length = get_value(of,player_id,57, 2, 15, "Neck Length") - 7
+    player_should_width = get_value(of,player_id,62, 1, 15, "Shoulder Width") - 7
+    player_leg_circu = get_value(of,player_id,59, 2, 15, "Leg Circumference") - 7
+    player_arm_circu = get_value(of,player_id,58, 2, 15, "Arm Circumferemce") - 7
+    player_leg_length = get_value(of,player_id,60, 4, 15, "Leg Length") - 7
+    #player_growth_type= get_value(of,player_id,87-48,7, 0x05, "Growth type")
+    player_face_id = get_value(of,player_id,53,3, 0x1FF, "face id") + 1
+    player_face_type = get_value(of,player_id,60,2, 3, "face TYPE")
+    if player_face_type == 0: 
+        player_face_type = "BUILD"
+    elif player_face_type == 1:
+        player_face_type = "PRESET SPECIAL"
+    elif player_face_type == 2:
+        player_face_type = "PRESET NORMAL"
+    else:
+        player_face_type = "ERROR"
+    
+    #print(player_growth_type)
     return ([player_id, player_name, player_shirt_name, player_cbwL,player_gk ,player_cbwS ,player_cbt ,player_sb ,player_dm ,player_wb ,player_cm ,player_sm ,player_om ,
         player_wg ,player_ss ,player_cf ,player_regPos ,player_height ,player_foot ,player_favSide ,player_wfa ,player_wff ,player_attack ,player_defence ,player_balance ,
         player_stamina ,player_speed ,player_accel ,player_response ,player_agility ,player_dribAcc ,player_dribSpe ,player_sPassAcc ,player_sPassSpe ,player_lPassAcc ,
@@ -291,7 +303,8 @@ def get_stats(player_id, of):
         player_consistency ,player_gkAbil ,player_team ,player_condition ,player_statX ,player_drib ,player_dribKeep ,player_post ,player_posit ,player_offside ,player_linePos ,
         player_midShot ,player_scorer ,player_play ,player_pass ,player_bff ,player_pk ,player_k11 ,player_longThrow ,player_direct ,player_side ,player_centre ,player_outside ,
         player_man ,player_dLine ,player_slide ,player_cover ,player_gkKick ,player_keeperPK ,player_keeper11 ,player_injury ,player_dribSty ,player_freekick ,player_pkStyle ,
-        player_dkSty ,player_age ,player_weight ,player_nation ,player_callName ,player_statEdited, player_goal_c1, player_goal_c2, player_skin_colour])
+        player_dkSty ,player_age ,player_weight ,player_nation ,player_callName ,player_statEdited, player_goal_c1, player_goal_c2, player_skin_colour, player_head_height, 
+        player_neck_width, player_neck_length, player_should_width, player_leg_circu, player_arm_circu, player_leg_length, player_face_type, player_face_id])
 
 
 start_address = 36872
