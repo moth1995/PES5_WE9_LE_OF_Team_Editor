@@ -94,9 +94,9 @@ root.geometry('%dx%d+%d+%d' % (w, h, x, y))
 #Once it start it will ask to select the option file
 root.filename=""
 #temp_file=""
-#root.filename = filedialog.askopenfilename(initialdir=".",title="Select your option file", filetypes=(("KONAMI-WIN32PES5OPT","KONAMI-WIN32PES5OPT"),("KONAMI-WIN32WE9UOPT","KONAMI-WIN32WE9UOPT"),("KONAMI-WIN32WE9KOPT","KONAMI-WIN32WE9KOPT")))
+root.filename = filedialog.askopenfilename(initialdir=".",title="Select your option file", filetypes=(("KONAMI-WIN32PES5OPT","KONAMI-WIN32PES5OPT"),("KONAMI-WIN32WE9UOPT","KONAMI-WIN32WE9UOPT"),("KONAMI-WIN32WE9KOPT","KONAMI-WIN32WE9KOPT")))
 #root.filename = "KONAMI-WIN32PES5OPT"
-root.filename = r"C:\Users\marco\Documents\KONAMI\Pro Evolution Soccer 5\save\folder1\KONAMI-WIN32PES5OPT"
+#root.filename = r"C:\Users\marco\Documents\KONAMI\Pro Evolution Soccer 5\save\folder1\KONAMI-WIN32PES5OPT"
 if root.filename!="":
     of = OptionFile(root.filename)
     '''
@@ -109,31 +109,53 @@ if root.filename!="":
 else:
     root.destroy()
 
-#below is how to read the value for all players, i compare this to the mdb file exported from dkz studio
 
-#get_value(of,player,86-48, 0, 127, "GOAL CELEBRATION 2")
-#get_value(of,player,85-48, 1, 127, "GOAL CELEBRATION 1")
+
+# CODE BELOW WAS DONE ONLY FOR TESTING
+'''
 
 
 players_ids=[*range(1, 5000, 1)]+[*range(32768, 32952, 1)]
 all_data=[]
 for player_id in players_ids:
-    ##all_data.append(player)
-    all_data.append(int(get_value(of,player_id,53,3, 0xFF, "face width"))+1)
+    all_data.append(int(get_value(of,player_id,123-48, 7, 7, "Head overall position")-3)*-1)
+#validate=[*range(0, 8, 1)]#+[*range(0, 6, 1)]
+#validate = [0,1,2,3,4,5,6]
+#validate = [6,5,4,3,2,1,0]
+#validate = [0, 1, 7, 10, 17, 19]
+#print(validate)
+#test=[]
 
+for shift in range(0,65536):
+    #print (f"the mask is {mask}")
+    for mask in range(0,65536):
+        #mask=12
+        offset = 121-48
+        stat_name = ""
+        test.append((get_value(of,73,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,94,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,90,offset, shift, mask, stat_name) ))
+        
+        test.append((get_value(of,91,offset, shift, mask, stat_name) ))
+        
+        test.append((get_value(of,92,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,86,offset,shift, mask, stat_name) ))
+        test.append((get_value(of,46,offset, shift, mask, stat_name) ))
+        #test.append((get_value(of,62,offset, shift, mask, stat_name) ))
+        
+        #test.append((get_value(of,690,offset, shift, mask, stat_name) ))
+        #test.append((get_value(of,4473,offset, shift, mask, stat_name) ))
+        #test.append((get_value(of,1485,offset, shift, mask, stat_name) ))
+        
+        #test.append((get_value(of,4521,offset, shift, mask, stat_name) ))
+        #test.append((get_value(of,1229,offset, shift, mask, stat_name) ))
+        #test.append((get_value(of,690,offset, shift, mask, stat_name) ))
+        #test.append((get_value(of,4029,offset, shift, mask, stat_name) ))
 
-#print (all_data[1228])
-
-#get_value(of, 1, 0, 0 , 10, "boot type") #could be 12 boots maybe 51 offset
-
-#print(get_value(of, 1, 7, 0, 127, "Attack"))
-#set_value(of, 1, 7, 0, 127, 31)
-#print(get_value(of, 1, 7, 0, 127, "Attack"))
-
-#load_csv(of, 'players.csv')
-#print(get_value(of, 1, 7, 0, 127, "Attack"))
-#print(of.file_location)
-#of.save_option_file()
+        if test == validate:
+            print(shift, mask)
+        test=[]
+'''
 
 
 tabs_container=ttk.Notebook(root)
@@ -192,8 +214,8 @@ import_csv_btn.place(x=320, y=160)
 
 decrypt_of_btn.place(x=240, y=160)
 encrypt_of_btn.place(x=320, y=160)
-stat_test_entry.place(x=200, y=70)
-test_print_btn.place(x=200, y=100)
+#stat_test_entry.place(x=200, y=70)
+#test_print_btn.place(x=200, y=100)
 
 #Placing tabs and container in the root
 

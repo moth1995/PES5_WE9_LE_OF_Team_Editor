@@ -1,5 +1,6 @@
 from COFPES_OF_Editor_5.editor.utils.common_functions import zero_fill_right_shift, to_int, to_byte
 
+# Thanks to evo-web's user mattmid for helping me with various player attributes!
 
 # This function is use to get option file data into integer and assign it to a variable
 
@@ -28,18 +29,6 @@ def get_value(of, player_id, offset, shift, mask, stat_name):
     #print("{0:b}".format(j))
     #print(j)
     return j
-
-
-def get_boot_type(of, player_id, offset, stat_name):
-    # Thanks to Pato_lucas18 for giving me this function, it was more than useful
-    i = start_address + 48 + player_id * 124 + offset
-    if player_id > last_player_id:
-        i = start_address_edited + (player_id - first_edited_id) * 124 + offset
-    j=of.data[i]
-    boot_colour=j//32+1
-    boot_type=j%32
-    #print(stat_name, boot_type, boot_colour)
-    return boot_type, boot_colour
 
 
 #Most of the code for the function below was taken from peterc10 file player.py thanks a lot pete!
@@ -113,14 +102,6 @@ def set_value(of, player_id, offset, shift, mask, new_value):
     #of.data[i] = to_byte(zero_fill_right_shift(new_value,8))
     of.data[i] = (zero_fill_right_shift(new_value,8))
 
-
-def set_boot_type_colour(of, player_id, offset, new_type, new_colour):
-    # Thanks to Pato_lucas18 for giving me this function, it was more than useful
-    i = start_address + 48 + (player_id * 124) + offset
-    if (player_id > last_player_id):
-        i = start_address_edited + ((player_id - first_edited_id) * 124) + offset
-    new_value =(new_colour-1)*32+(new_type-1)*2
-    of.data[i] = new_value
 
 
 def set_name(of, player_id, new_name):
@@ -269,21 +250,18 @@ def get_stats(player_id, of):
     player_nation = nationalities[get_value(of, player_id, 63, 2, 127, "Nationality")]
     player_callName = get_value(of, player_id, 1, 0, 65535, "Callname ID")
     player_statEdited = get_value(of, player_id, 39, 7, 1, "Stat Edited")
-    #player_boot_type = get_value(of, player_id, 51, 1, 8, "boot type")
-    #player_boot_colour = get_value(of, player_id, 51, 0, 3, "boot type")
-    #player_boot_type, player_boot_colour = get_boot_type(of, player_id, 51, "Boot type and colour")
+    player_boot_type = get_value(of, player_id, 51, 9, 15, "boot type")
+    player_boot_colour = get_value(of, player_id, 51, 13, 3, "boot COLOUR") + 1 
     player_goal_c1 = get_value(of,player_id,85-48, 1, 127, "GOAL CELEBRATION 1")
     player_goal_c2 = get_value(of,player_id,86-48, 0, 127, "GOAL CELEBRATION 2")
     player_skin_colour = get_value(of,player_id,91-48,1, 3, "skin colour") + 1
-    #thanks to evo-web's user mattmid for helping me with stats below
-    player_head_height = get_value(of,player_id,43, 3, 15, "head height") - 7
     player_neck_width = get_value(of,player_id,44, 3, 15, "Neck Width") - 7
     player_neck_length = get_value(of,player_id,57, 2, 15, "Neck Length") - 7
     player_should_width = get_value(of,player_id,62, 1, 15, "Shoulder Width") - 7
     player_leg_circu = get_value(of,player_id,59, 2, 15, "Leg Circumference") - 7
     player_arm_circu = get_value(of,player_id,58, 2, 15, "Arm Circumferemce") - 7
     player_leg_length = get_value(of,player_id,60, 4, 15, "Leg Length") - 7
-    #player_growth_type= get_value(of,player_id,87-48,7, 0x05, "Growth type")
+    #player_growth_type= get_value(of,player_id,87-48,7, 0x05, "Growth type") #Offset is rigth, but i cant get the proper value in any case, also this value seems to be related to salary of player
     player_face_id = get_value(of,player_id,53,3, 0x1FF, "face id") + 1
     player_face_type = get_value(of,player_id,60,2, 3, "face TYPE")
     if player_face_type == 0: 
@@ -294,17 +272,131 @@ def get_stats(player_id, of):
         player_face_type = "PRESET NORMAL"
     else:
         player_face_type = "ERROR"
+    player_head_height = get_value(of,player_id,43, 3, 15, "head height") - 7
+    player_head_width = get_value(of,player_id,43, 7, 15, "head width") - 7
+    player_head_ov_pos = get_value(of,player_id,124-48,5, 7, "Head overall position") - 3
+    player_brows_type = get_value(of,player_id,71, 5, 31, "Brows type") + 1
+    player_brows_angle = (get_value(of,player_id,71, 2, 7, "Brown angle") - 3)*-1
+    player_brows_height = (get_value(of,player_id,70, 4, 7, "Brown height") - 3)*-1
+    player_brows_spacing = (get_value(of,player_id,70, 7, 7, "Brown spacing") - 3)*-1
+    # Eyes menu
+    player_eyes_type = get_value(of,player_id,68, 3, 31, "Eyes type") + 1
+    player_eyes_c1 = get_value(of,player_id,46, 9, 3, "Eyes colour 1") + 1
+    player_eyes_c2 = get_value(of,player_id,47, 3, 15, "Eyes colour 2")
+    if player_eyes_c2 == 0:
+        player_eyes_c2 = "BLACK 1"
+    elif player_eyes_c2 == 1:
+        player_eyes_c2 = "BLACK 2"
+    elif player_eyes_c2 == 2:
+        player_eyes_c2 = "DARK GREY 1"
+    elif player_eyes_c2 == 3:
+        player_eyes_c2 = "DARK GREY 2"
+    elif player_eyes_c2 == 4:
+        player_eyes_c2 = "BROWN 1"
+    elif player_eyes_c2 == 5:
+        player_eyes_c2 = "BROWN 2"
+    elif player_eyes_c2 == 6:
+        player_eyes_c2 = "LIGHT BLUE 1"
+    elif player_eyes_c2 == 7:
+        player_eyes_c2 = "LIGHT BLUE 2"
+    elif player_eyes_c2 == 8:
+        player_eyes_c2 = "BLUE 1"
+    elif player_eyes_c2 == 9:
+        player_eyes_c2 = "BLUE 2"
+    elif player_eyes_c2 == 10:
+        player_eyes_c2 = "GREEN 1"
+    elif player_eyes_c2 == 11:
+        player_eyes_c2 = "GREEN 2"
+    else:
+        player_eyes_c2 = "ERROR"
+    # Nose menu
+    player_nose_type = get_value(of,player_id,121-48, 0, 7, "Nose type") + 1
+    player_nose_height = (get_value(of,player_id,121-48, 6, 7, "Nose height") - 3)*-1
+    player_nose_width = (get_value(of,player_id,121-48, 3, 7, "Nose width") - 3)*-1
+    # Cheeks menu
+    player_cheecks_type = get_value(of,player_id,120-48, 2, 7, "cheeks type") + 1
+    player_cheecks_shape = (get_value(of,player_id,120-48, 5, 7, "cheecks shape") - 3)*-1
+    # Mouth menu
+    player_mouth_type = get_value(of,player_id,122-48, 1, 31, "mouth type") + 1
+    player_mouth_size = (get_value(of,player_id,123-48, 1, 7, "mouth type") - 3)*-1
+    player_mouth_position = (get_value(of,player_id,122-48, 6, 7, "mouth position") - 3)*-1
+    # Jaw menu
+    player_jaw_type = get_value(of,player_id,123-48, 4, 7, "Jaw type") + 1
+    player_jaw_chin = (get_value(of,player_id,123-48, 7, 7, "Jaw chin") - 3)*-1
+    player_jaw_width = (get_value(of,player_id,124-48, 2, 7, "Jaw width") - 3)*-1
+
+    # Hair menu
+    #player_hair =  get_value(of,player_id,45, 0, 2047, "Hair?")
+    player_facial_hair_type = get_value(of,player_id,95-48, 7, 127, "facial hair")
+    player_facial_hair_colour = get_value(of,player_id,97-48, 0, 63, "facial hair colour") + 1
+    player_sunglasses = get_value(of,player_id,97-48, 6, 3, "Sun glasses type")
+    player_sunglasses_colour = get_value(of,player_id,114-48, 0, 7, "Sun glasses colour") + 1
+    # accesories
+    player_neck_warm = get_value(of,player_id,98-48, 0, 1, "Neck Warmer")
+    player_necklace_type = get_value(of,player_id,98-48, 1, 3, "Necklace type")
+    player_necklace_colour = get_value(of,player_id,98-48, 3, 7, "Necklace colour") + 1
+    player_wistband = get_value(of,player_id,98-48, 7, 3, "wistband")
+    player_wistband_colour = get_value(of,player_id,99-48, 1, 7, "wistband colour") + 1
+    player_friend_brace =  get_value(of,player_id,99-48, 3, 4, "friendship bracelate")
+    player_friend_brace_colour =  get_value(of,player_id,99-48, 6, 7, "friendship bracelate colour") + 1
+    player_gloves = get_value(of,player_id,104-48, 7, 1, "Gloves")
+    player_finger_band = get_value(of,player_id,109-48, 0, 3, "Finger Band")
+    player_shirt = get_value(of,player_id,92-48, 7, 1, "Shirt")
+    player_sleeves =  get_value(of,player_id,96-48, 6, 3, "Sleeves")
+    player_under_short =  get_value(of,player_id,100-48, 76, 1, "under short")
+    player_under_short_colour =  get_value(of,player_id,101-48, 0, 7, "under short colour") + 1
+    player_socks =  get_value(of,player_id,105-48, 0, 3, "Socks") + 1
+    player_tape =  get_value(of,player_id,102-48, 4, 1, "Tape")
     
-    #print(player_growth_type)
-    return ([player_id, player_name, player_shirt_name, player_cbwL,player_gk ,player_cbwS ,player_cbt ,player_sb ,player_dm ,player_wb ,player_cm ,player_sm ,player_om ,
-        player_wg ,player_ss ,player_cf ,player_regPos ,player_height ,player_foot ,player_favSide ,player_wfa ,player_wff ,player_attack ,player_defence ,player_balance ,
-        player_stamina ,player_speed ,player_accel ,player_response ,player_agility ,player_dribAcc ,player_dribSpe ,player_sPassAcc ,player_sPassSpe ,player_lPassAcc ,
-        player_lPassSpe ,player_shotAcc ,player_shotPow ,player_shotTec ,player_fk ,player_curling ,player_heading ,player_jump ,player_tech ,player_aggress ,player_mental ,
-        player_consistency ,player_gkAbil ,player_team ,player_condition ,player_statX ,player_drib ,player_dribKeep ,player_post ,player_posit ,player_offside ,player_linePos ,
-        player_midShot ,player_scorer ,player_play ,player_pass ,player_bff ,player_pk ,player_k11 ,player_longThrow ,player_direct ,player_side ,player_centre ,player_outside ,
-        player_man ,player_dLine ,player_slide ,player_cover ,player_gkKick ,player_keeperPK ,player_keeper11 ,player_injury ,player_dribSty ,player_freekick ,player_pkStyle ,
-        player_dkSty ,player_age ,player_weight ,player_nation ,player_callName ,player_statEdited, player_goal_c1, player_goal_c2, player_skin_colour, player_head_height, 
-        player_neck_width, player_neck_length, player_should_width, player_leg_circu, player_arm_circu, player_leg_length, player_face_type, player_face_id])
+    
+    return ([
+    
+    # Player basic settings
+    player_id, player_name, player_shirt_name, player_callName, player_nation, player_age, player_foot, player_injury, 
+    player_dribSty, player_freekick, player_pkStyle, player_dkSty, player_goal_c1, player_goal_c2,
+    #player_growth_type,
+    
+    # Player position settings
+    player_regPos, player_favSide, player_gk, player_cbwS, player_cbt, player_sb, player_dm, player_wb, player_cm, player_sm, player_om, player_wg, player_ss, player_cf,
+    
+    # Player ability settings
+    player_attack, player_defence, player_balance, player_stamina, player_speed, player_accel, player_response, player_agility, player_dribAcc, player_dribSpe, player_sPassAcc, 
+    player_sPassSpe, player_lPassAcc, player_lPassSpe, player_shotAcc, player_shotPow, player_shotTec, player_fk, player_curling, player_heading, player_jump, player_tech, 
+    player_aggress, player_mental, player_gkAbil, player_team, player_consistency, player_condition, player_wfa, player_wff,
+    
+    # Player special abilities settings
+    player_drib, player_dribKeep, player_posit, player_offside, player_play, player_pass, player_scorer, player_k11, player_post, player_linePos, player_midShot, player_side, 
+    player_centre, player_pk, player_direct, player_outside, player_man, player_slide, player_cover, player_dLine, player_keeperPK, player_keeper11, player_longThrow,
+    
+    # Player appearence settings
+    # Head
+    player_face_type, player_skin_colour, player_head_height, player_head_width, player_face_id, player_head_ov_pos,
+    player_brows_type, player_brows_angle, player_brows_height, player_brows_spacing,
+    player_eyes_type, player_eyes_c1, player_eyes_c2,
+    player_nose_type, player_nose_height, player_nose_width,
+    player_cheecks_type, player_cheecks_shape,
+    player_mouth_type, player_mouth_size, player_mouth_position,
+    player_jaw_type, player_jaw_chin, player_jaw_width,
+    
+    # Hair
+    player_hair,
+    player_facial_hair_type, player_facial_hair_colour, 
+    player_sunglasses, player_sunglasses_colour,
+    
+    # Physical
+    player_height, player_weight, 
+    player_neck_length, player_neck_width, player_should_width, player_arm_circu, player_leg_circu, player_leg_length,  
+        
+        
+    # Boots/Acc.
+    player_boot_type, player_boot_colour,
+    player_neck_warm, player_necklace_type, player_necklace_colour, player_wistband, player_wistband_colour, player_friend_brace, player_friend_brace_colour, player_gloves,
+    player_finger_band, player_shirt, player_sleeves, player_under_short, player_under_short_colour, player_socks, player_tape,
+    
+    # Rare stats found on PES Editor Source code
+    player_cbwL, player_statX, player_bff, player_gkKick, player_statEdited
+    ])
+
 
 
 start_address = 36872
