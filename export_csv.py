@@ -32,7 +32,7 @@ def create_csv(filename):
             # Head
             "FACE TYPE", "SKIN COLOUR", "HEAD HEIGHT", "HEAD WIDTH", "FACE ID", "HEAD OVERALL POSITION",
             "BROWS TYPE", "BROWS ANGLE", "BROWS HEIGHT", "BROWS SPACING",
-            "EYE TYPE", "EYE COLOUR 1", "EYE COLOUR 2",
+            "EYES TYPE", "EYES POSITION" , "EYES ANGLE", "EYES LENGTH", "EYES WIDTH", "EYES COLOUR 1", "EYES COLOUR 2",
             "NOSE TYPE", "NOSE HEIGHT", "NOSE WIDTH",
             "CHEECKS TYPE", "CHEECKS SHAPE",
             "MOUTH TYPE", "MOUTH SIZE", "MOUTH POSITION",
@@ -44,7 +44,7 @@ def create_csv(filename):
             
             # Physical
             "HEIGHT", "WEIGHT",
-            "NECK LENGTH", "NECK WIDTH", "SHOULDER WIDTH", "ARM CIRCUMFERENCE", "LEG CIRCUMFERENCE", "LEG LENGTH", 
+            "NECK LENGTH", "NECK WIDTH", "SHOULDER HEIGHT", "SHOULDER WIDTH", "CHEST MEASUREMENT", "WAIST CIRCUMFERENCE", "ARM CIRCUMFERENCE", "LEG CIRCUMFERENCE", "CALF CIRCUMFERENCE", "LEG LENGTH", 
             
             # Boots/Acc.
             "BOOT TYPE", "BOOT COLOUR",

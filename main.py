@@ -111,10 +111,11 @@ else:
 
 
 
-# CODE BELOW WAS DONE ONLY FOR TESTING
+# CODE BELOW WAS DONE ONLY FOR DEBUGGING, IF YOU WANT TO FIND THE SHIFT AND MASK FOR A STAT
+# YOU JUST NEED TO PASS PLAYER IDS THAT YOU WILL USE TO COMPARE AND WRITE THE POSSIBLE VALUES IN THE LIST CALLED TEST
+
+
 '''
-
-
 players_ids=[*range(1, 5000, 1)]+[*range(32768, 32952, 1)]
 all_data=[]
 for player_id in players_ids:
@@ -122,25 +123,25 @@ for player_id in players_ids:
 #validate=[*range(0, 8, 1)]#+[*range(0, 6, 1)]
 #validate = [0,1,2,3,4,5,6]
 #validate = [6,5,4,3,2,1,0]
-#validate = [0, 1, 7, 10, 17, 19]
-#print(validate)
-#test=[]
+validate = [47, 46, 49 , 67, 37, 3]
+print(validate)
+test=[]
 
 for shift in range(0,65536):
     #print (f"the mask is {mask}")
     for mask in range(0,65536):
         #mask=12
-        offset = 121-48
+        offset = 86-48
         stat_name = ""
-        test.append((get_value(of,73,offset, shift, mask, stat_name) ))
-        test.append((get_value(of,94,offset, shift, mask, stat_name) ))
-        test.append((get_value(of,90,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,45,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,79,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,140,offset, shift, mask, stat_name) ))
         
-        test.append((get_value(of,91,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,144,offset, shift, mask, stat_name) ))
         
-        test.append((get_value(of,92,offset, shift, mask, stat_name) ))
-        test.append((get_value(of,86,offset,shift, mask, stat_name) ))
-        test.append((get_value(of,46,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,149,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,195,offset,shift, mask, stat_name) ))
+        #test.append((get_value(of,,offset, shift, mask, stat_name) ))
         #test.append((get_value(of,62,offset, shift, mask, stat_name) ))
         
         #test.append((get_value(of,690,offset, shift, mask, stat_name) ))
@@ -162,6 +163,9 @@ tabs_container=ttk.Notebook(root)
 swap_teams_tab=Frame(tabs_container, width=w, height=h)
 csv_tab=Frame(tabs_container, width=w, height=h)
 extra_tab=Frame(tabs_container, width=w, height=h)
+copyright_lbl=Label(root, text="By PES Indie Team")
+thanks_lbl=Label(root, text="Thanks to PeterC10 for python de/encrypt code for OF\nand also mattmid who help me with many player attributes")
+
 
 #Swap teams tab 
 
@@ -175,9 +179,6 @@ team_b_cmb=ttk.Combobox(swap_teams_tab, state="readonly", value=teams_list, widt
 
 swap_teams_btn=Button(swap_teams_tab, text="Swap teams", command=lambda: swap_btn_action())
 save_changes_btn=Button(swap_teams_tab, text="Save changes", command=lambda: save_btn_action())
-
-copyright_lbl=Label(swap_teams_tab, text="By PES Indie Team")
-thanks_lbl=Label(swap_teams_tab, text="Thanks to PeterC10 for python de/encrypt code for OF")
 
 #CSV tab
 
@@ -201,8 +202,8 @@ team_a_cmb.place(x=200, y=100)
 team_b_cmb.place(x=420, y=100)
 swap_teams_btn.place(x=380, y=160)
 save_changes_btn.place(x=376, y=200)
-copyright_lbl.place(x=0, y=555)
-thanks_lbl.place(x=500, y=555)
+copyright_lbl.place(x=0, y=570)
+thanks_lbl.place(x=480, y=560)
 
 #CSV tab placing
 
@@ -218,9 +219,6 @@ encrypt_of_btn.place(x=320, y=160)
 #test_print_btn.place(x=200, y=100)
 
 #Placing tabs and container in the root
-
-
-
 
 tabs_container.pack()
 swap_teams_tab.pack(fill="both", expand=1)

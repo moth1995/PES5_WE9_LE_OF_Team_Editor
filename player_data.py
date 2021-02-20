@@ -8,7 +8,8 @@ from COFPES_OF_Editor_5.editor.utils.common_functions import zero_fill_right_shi
 def get_value(of, player_id, offset, shift, mask, stat_name):
     i = start_address + 48 + player_id * 124 + offset
     if player_id > last_player_id:
-        i = start_address_edited + (player_id - first_edited_id) * 124 + offset
+        #print((player_id - first_edited_id))
+        i = start_address_edited + 48 + (player_id - first_edited_id) * 124 + offset
     #print(i)
     #print("{0:x}".format(of.data[i]))
     #print(of.data[i])
@@ -67,13 +68,14 @@ def get_names(player_id, of):
                     prefix = address_prefix
                     break
 
-            name = f"{prefix} (ID: {player_id})"
+            name = f"{prefix} ({player_id})"
         #get the shirt name
         shirt_name_address = player_offset + 32
         name_byte_array = of.data[
             shirt_name_address : shirt_name_address
             + name_bytes_length // 2
         ]
+        #print(player_id)
         shirt_name = name_byte_array.partition(b"\0")[0].decode()
 
     #print (name)
@@ -87,7 +89,7 @@ def set_value(of, player_id, offset, shift, mask, new_value):
     #print (start_address, player_id * 124, offset)
     i = start_address + 48 + (player_id * 124) + offset
     if (player_id > last_player_id):
-        i = start_address_edited + ((player_id - first_edited_id) * 124) + offset
+        i = start_address_edited + 48 + ((player_id - first_edited_id) * 124) + offset
     #j = to_int(of.data[i]) << 8 | to_int(of.data[(i - 1)])
     #print(i)
     j = (of.data[i]) << 8 | (of.data[(i - 1)])
@@ -108,7 +110,7 @@ def set_name(of, player_id, new_name):
     name_bytes_length = 32
     max_name_size = 15
     new_name = new_name[: max_name_size]
-    if (new_name == f"Unknown (ID: {player_id})" or new_name == f"Edited (ID: {player_id})" or new_name == f"Unused (ID: {player_id})" or new_name == ""):
+    if (new_name == "Unknown (" + str(player_id) + ")" or new_name == "Edited (" + str(player_id) + ")" or new_name == "Unused (" + str(player_id) + ")" or new_name == ""):
         player_name_bytes=[0] * name_bytes_length
     else:
         player_name_bytes = [0] * name_bytes_length
@@ -149,9 +151,34 @@ def set_shirt_name(of, player_id, new_shirt_name):
 
 
 def get_stats(player_id, of):
-    #nota, para la altura hay que sumar 148, para la edad hay que sumarle 15
+    # Basic seetings
     player_name, player_shirt_name = get_names(player_id, of)
-    player_cbwL = get_value(of, player_id, 11, 14, 1, "ASW")
+    player_callName = get_value(of, player_id, 1, 0, 65535, "Callname ID")
+    player_nation = nationalities[get_value(of, player_id, 63, 2, 127, "Nationality")]
+    player_foot = get_value(of, player_id, 5, 0, 1, "Foot")
+    if player_foot == 0:
+        player_foot = "R"
+    else:
+        player_foot = "L"
+    player_injury = get_value(of, player_id, 35, 3, 3, "Injury T")
+    if player_injury == 2:
+        player_injury = "A"
+    elif player_injury == 1:
+        player_injury = "B"
+    else:
+        player_injury = "C"
+    player_dribSty = get_value(of, player_id, 6, 0, 3, "Dribble Style") + 1
+    player_freekick = get_value(of, player_id, 5, 1, 15, "FK Style") + 1
+    player_pkStyle = get_value(of, player_id, 5, 5, 7, "PK Style") + 1
+    player_dkSty = get_value(of, player_id, 6, 2, 3, "DK Style") + 1
+    player_age = get_value(of, player_id, 62, 5, 31, "Age") +15
+    player_goal_c1 = get_value(of,player_id,85-48, 1, 127, "GOAL CELEBRATION 1")
+    player_goal_c2 = get_value(of,player_id,86-48, 0, 127, "GOAL CELEBRATION 2")
+    # Offset for growth type is rigth, but i cant get the proper value in any case, also this value seems to be related to salary of player
+    #player_growth_type= get_value(of,player_id,87-48,7, 0x05, "Growth type")
+    
+    # Position settings
+    player_regPos = get_value(of, player_id, 6, 4, 15, "Registered position")
     player_gk = get_value(of, player_id, 8, 6, 1, "GK")
     player_cbwS = get_value(of, player_id, 8, 7, 1, "CWP")
     player_cbt = get_value(of, player_id, 12, 4, 1, "CBT")
@@ -164,13 +191,6 @@ def get_stats(player_id, of):
     player_wg = get_value(of, player_id, 16, 7, 1, "WG")
     player_ss = get_value(of, player_id, 20, 4, 1, "SS")
     player_cf = get_value(of, player_id, 20, 5, 1, "CF")
-    player_regPos = get_value(of, player_id, 6, 4, 15, "Registered position")
-    player_height = get_value(of, player_id, 41, 0, 63, "Height") + 148
-    player_foot = get_value(of, player_id, 5, 0, 1, "Foot")
-    if player_foot == 0:
-        player_foot = "R"
-    else:
-        player_foot = "L"
     player_favSide = get_value(of, player_id, 20, 6, 3, "Fav side")
     if player_favSide == 0:
         player_favSide = "R"
@@ -178,6 +198,8 @@ def get_stats(player_id, of):
         player_favSide = "L"
     else:
         player_favSide = "B"
+
+    # Abilities
     player_wfa = get_value(of, player_id, 34, 5, 7, "W Foot Acc") + 1
     player_wff = get_value(of, player_id, 35, 0, 7, "W Foot Freq") + 1
     player_attack = get_value(of, player_id, 7, 0, 127, "Attack")
@@ -208,7 +230,8 @@ def get_stats(player_id, of):
     player_gkAbil = get_value(of, player_id, 31, 5, 127, "GK")
     player_team = get_value(of, player_id, 33, 0, 127, "Team Work")
     player_condition = get_value(of, player_id, 34, 2, 7, "Condition") + 1
-    player_statX = get_value(of, player_id, 27, 5, 127, "StatX") + 1
+    
+    # Special Abilities
     player_drib = get_value(of, player_id, 24, 4, 1, "Dribbling")
     player_dribKeep = get_value(of, player_id, 24, 5, 1, "Anti-Dribble")
     player_post = get_value(of, player_id, 32, 4, 1, "Post")
@@ -219,7 +242,6 @@ def get_stats(player_id, of):
     player_scorer = get_value(of, player_id, 28, 6, 1, "Scoring")
     player_play = get_value(of, player_id, 28, 4, 1, "Playmaking")
     player_pass = get_value(of, player_id, 28, 5, 1, "Passing")
-    player_bff = get_value(of, player_id, 20, 6, 1, "B F Feint")
     player_pk = get_value(of, player_id, 35, 6, 1, "Penalties")
     player_k11 = get_value(of, player_id, 28, 7, 1, "1-1 Scoring")
     player_longThrow = get_value(of, player_id, 36, 7, 1, "Long Throw")
@@ -231,38 +253,13 @@ def get_stats(player_id, of):
     player_dLine = get_value(of, player_id, 36, 4, 1, "D-L Control")
     player_slide = get_value(of, player_id, 36, 2, 1, "Sliding")
     player_cover = get_value(of, player_id, 36, 3, 1, "Cover")
-    player_gkKick = get_value(of, player_id, 20, 7, 1, "GK Kick")
     player_keeperPK = get_value(of, player_id, 36, 5, 1, "Penalty GK")
     player_keeper11 = get_value(of, player_id, 36, 6, 1, "1-on-1 GK")
-    player_injury = get_value(of, player_id, 35, 3, 3, "Injury T")
-    if player_injury == 2:
-        player_injury = "A"
-    elif player_injury == 1:
-        player_injury = "B"
-    else:
-        player_injury = "C"
-    player_dribSty = get_value(of, player_id, 6, 0, 3, "Dribble Style") + 1
-    player_freekick = get_value(of, player_id, 5, 1, 15, "FK Style") + 1
-    player_pkStyle = get_value(of, player_id, 5, 5, 7, "PK Style") + 1
-    player_dkSty = get_value(of, player_id, 6, 2, 3, "DK Style") + 1
-    player_age = get_value(of, player_id, 62, 5, 31, "Age") +15
-    player_weight = get_value(of, player_id, 41, 6, 127, "Weight")
-    player_nation = nationalities[get_value(of, player_id, 63, 2, 127, "Nationality")]
-    player_callName = get_value(of, player_id, 1, 0, 65535, "Callname ID")
-    player_statEdited = get_value(of, player_id, 39, 7, 1, "Stat Edited")
-    player_boot_type = get_value(of, player_id, 51, 9, 15, "boot type")
-    player_boot_colour = get_value(of, player_id, 51, 13, 3, "boot COLOUR") + 1 
-    player_goal_c1 = get_value(of,player_id,85-48, 1, 127, "GOAL CELEBRATION 1")
-    player_goal_c2 = get_value(of,player_id,86-48, 0, 127, "GOAL CELEBRATION 2")
-    player_skin_colour = get_value(of,player_id,91-48,1, 3, "skin colour") + 1
-    player_neck_width = get_value(of,player_id,44, 3, 15, "Neck Width") - 7
-    player_neck_length = get_value(of,player_id,57, 2, 15, "Neck Length") - 7
-    player_should_width = get_value(of,player_id,62, 1, 15, "Shoulder Width") - 7
-    player_leg_circu = get_value(of,player_id,59, 2, 15, "Leg Circumference") - 7
-    player_arm_circu = get_value(of,player_id,58, 2, 15, "Arm Circumferemce") - 7
-    player_leg_length = get_value(of,player_id,60, 4, 15, "Leg Length") - 7
-    #player_growth_type= get_value(of,player_id,87-48,7, 0x05, "Growth type") #Offset is rigth, but i cant get the proper value in any case, also this value seems to be related to salary of player
-    player_face_id = get_value(of,player_id,53,3, 0x1FF, "face id") + 1
+    
+    # Player appearence settings
+    # Head
+    
+    # Face menu
     player_face_type = get_value(of,player_id,60,2, 3, "face TYPE")
     if player_face_type == 0: 
         player_face_type = "BUILD"
@@ -272,17 +269,26 @@ def get_stats(player_id, of):
         player_face_type = "PRESET NORMAL"
     else:
         player_face_type = "ERROR"
-    player_head_height = get_value(of,player_id,43, 3, 15, "head height") - 7
-    player_head_width = get_value(of,player_id,43, 7, 15, "head width") - 7
-    player_head_ov_pos = get_value(of,player_id,124-48,5, 7, "Head overall position") - 3
-    player_brows_type = get_value(of,player_id,71, 5, 31, "Brows type") + 1
-    player_brows_angle = (get_value(of,player_id,71, 2, 7, "Brown angle") - 3)*-1
-    player_brows_height = (get_value(of,player_id,70, 4, 7, "Brown height") - 3)*-1
-    player_brows_spacing = (get_value(of,player_id,70, 7, 7, "Brown spacing") - 3)*-1
+    player_skin_colour = get_value(of,player_id, 91-48,1, 3, "skin colour") + 1    
+    player_head_height = get_value(of,player_id, 43, 3, 15, "head height") - 7
+    player_head_width = get_value(of,player_id, 43, 7, 15, "head width") - 7
+    player_face_id = get_value(of,player_id, 53,3, 0x1FF, "face id") + 1
+    player_head_ov_pos = get_value(of,player_id, 124-48,5, 7, "Head overall position") - 3
+    
+    # Brows menu
+    player_brows_type = get_value(of,player_id, 71, 5, 31, "Brows type") + 1
+    player_brows_angle = (get_value(of,player_id, 71, 2, 7, "Brown angle") - 3)*-1
+    player_brows_height = (get_value(of,player_id, 70, 4, 7, "Brown height") - 3)*-1
+    player_brows_spacing = (get_value(of,player_id, 70, 7, 7, "Brown spacing") - 3)*-1
+    
     # Eyes menu
-    player_eyes_type = get_value(of,player_id,68, 3, 31, "Eyes type") + 1
-    player_eyes_c1 = get_value(of,player_id,46, 9, 3, "Eyes colour 1") + 1
-    player_eyes_c2 = get_value(of,player_id,47, 3, 15, "Eyes colour 2")
+    player_eyes_type = get_value(of,player_id, 68, 3, 31, "Eyes type") + 1
+    player_eyes_position = (get_value(of,player_id, 69, 0, 7, "Eye Position")-3)*-1
+    player_eyes_angle = (get_value(of,player_id, 69, 3, 7, "Eye Angle") -3)*-1
+    player_eyes_lenght = (get_value(of,player_id, 69, 6, 7, "Eye Length") -3)*-1
+    player_eyes_width = (get_value(of,player_id, 70, 1, 7, "Eye Width") -3)*-1
+    player_eyes_c1 = get_value(of,player_id, 46, 9, 3, "Eyes colour 1") + 1
+    player_eyes_c2 = get_value(of,player_id, 47, 3, 15, "Eyes colour 2")
     if player_eyes_c2 == 0:
         player_eyes_c2 = "BLACK 1"
     elif player_eyes_c2 == 1:
@@ -309,29 +315,50 @@ def get_stats(player_id, of):
         player_eyes_c2 = "GREEN 2"
     else:
         player_eyes_c2 = "ERROR"
+    
     # Nose menu
     player_nose_type = get_value(of,player_id,121-48, 0, 7, "Nose type") + 1
     player_nose_height = (get_value(of,player_id,121-48, 6, 7, "Nose height") - 3)*-1
     player_nose_width = (get_value(of,player_id,121-48, 3, 7, "Nose width") - 3)*-1
+    
     # Cheeks menu
     player_cheecks_type = get_value(of,player_id,120-48, 2, 7, "cheeks type") + 1
     player_cheecks_shape = (get_value(of,player_id,120-48, 5, 7, "cheecks shape") - 3)*-1
+    
     # Mouth menu
     player_mouth_type = get_value(of,player_id,122-48, 1, 31, "mouth type") + 1
     player_mouth_size = (get_value(of,player_id,123-48, 1, 7, "mouth type") - 3)*-1
     player_mouth_position = (get_value(of,player_id,122-48, 6, 7, "mouth position") - 3)*-1
+    
     # Jaw menu
     player_jaw_type = get_value(of,player_id,123-48, 4, 7, "Jaw type") + 1
     player_jaw_chin = (get_value(of,player_id,123-48, 7, 7, "Jaw chin") - 3)*-1
     player_jaw_width = (get_value(of,player_id,124-48, 2, 7, "Jaw width") - 3)*-1
 
     # Hair menu
-    #player_hair =  get_value(of,player_id,45, 0, 2047, "Hair?")
+    player_hair =  get_value(of,player_id,45, 0, 2047, "Hair?")
     player_facial_hair_type = get_value(of,player_id,95-48, 7, 127, "facial hair")
     player_facial_hair_colour = get_value(of,player_id,97-48, 0, 63, "facial hair colour") + 1
     player_sunglasses = get_value(of,player_id,97-48, 6, 3, "Sun glasses type")
     player_sunglasses_colour = get_value(of,player_id,114-48, 0, 7, "Sun glasses colour") + 1
-    # accesories
+    
+    # Physical settings
+    player_height = get_value(of, player_id, 41, 0, 63, "Height") + 148
+    player_weight = get_value(of, player_id, 41, 6, 127, "Weight")
+    player_neck_length = get_value(of,player_id,57, 2, 15, "Neck Length") - 7
+    player_neck_width = get_value(of,player_id,44, 3, 15, "Neck Width") - 7
+    player_shoulder_height = get_value(of,player_id,61, 5, 15, "Shoulder Height") -7
+    player_should_width = get_value(of,player_id,62, 1, 15, "Shoulder Width") - 7
+    player_chest_measu = get_value(of,player_id,57, 6, 15, "Chest measurement") - 7
+    player_waist_circu = get_value(of,player_id,58, 6, 15, "Waist Circ") -7
+    player_arm_circu = get_value(of,player_id,58, 2, 15, "Arm Circumferemce") - 7
+    player_leg_circu = get_value(of,player_id,59, 2, 15, "Leg Circumference") - 7
+    player_calf_circu = get_value(of,player_id,59, 6, 15, "Calf Circ") - 7
+    player_leg_length = get_value(of,player_id,60, 4, 15, "Leg Length") - 7
+    
+    # Boots/Accesories
+    player_boot_type = get_value(of, player_id, 51, 9, 15, "boot type")
+    player_boot_colour = get_value(of, player_id, 51, 13, 3, "boot COLOUR") + 1 
     player_neck_warm = get_value(of,player_id,98-48, 0, 1, "Neck Warmer")
     player_necklace_type = get_value(of,player_id,98-48, 1, 3, "Necklace type")
     player_necklace_colour = get_value(of,player_id,98-48, 3, 7, "Necklace colour") + 1
@@ -347,9 +374,17 @@ def get_stats(player_id, of):
     player_under_short_colour =  get_value(of,player_id,101-48, 0, 7, "under short colour") + 1
     player_socks =  get_value(of,player_id,105-48, 0, 3, "Socks") + 1
     player_tape =  get_value(of,player_id,102-48, 4, 1, "Tape")
-    
+
+    # Rare stats
+    player_cbwL = get_value(of, player_id, 11, 14, 1, "ASW")
+    player_statX = get_value(of, player_id, 27, 5, 127, "StatX") + 1
+    player_bff = get_value(of, player_id, 20, 6, 1, "B F Feint")
+    player_gkKick = get_value(of, player_id, 20, 7, 1, "GK Kick")
+    player_statEdited = get_value(of, player_id, 39, 7, 1, "Stat Edited")
     
     return ([
+    
+    # Here we return all the stats to make a beautiful csv file
     
     # Player basic settings
     player_id, player_name, player_shirt_name, player_callName, player_nation, player_age, player_foot, player_injury, 
@@ -372,20 +407,20 @@ def get_stats(player_id, of):
     # Head
     player_face_type, player_skin_colour, player_head_height, player_head_width, player_face_id, player_head_ov_pos,
     player_brows_type, player_brows_angle, player_brows_height, player_brows_spacing,
-    player_eyes_type, player_eyes_c1, player_eyes_c2,
+    player_eyes_type, player_eyes_position, player_eyes_angle, player_eyes_lenght, player_eyes_width, player_eyes_c1, player_eyes_c2,
     player_nose_type, player_nose_height, player_nose_width,
     player_cheecks_type, player_cheecks_shape,
     player_mouth_type, player_mouth_size, player_mouth_position,
     player_jaw_type, player_jaw_chin, player_jaw_width,
     
     # Hair
-    player_hair,
+    #player_hair,
     player_facial_hair_type, player_facial_hair_colour, 
     player_sunglasses, player_sunglasses_colour,
     
     # Physical
     player_height, player_weight, 
-    player_neck_length, player_neck_width, player_should_width, player_arm_circu, player_leg_circu, player_leg_length,  
+    player_neck_length, player_neck_width, player_shoulder_height, player_should_width, player_chest_measu, player_waist_circu, player_arm_circu, player_leg_circu, player_calf_circu, player_leg_length,  
         
         
     # Boots/Acc.
@@ -400,7 +435,7 @@ def get_stats(player_id, of):
 
 
 start_address = 36872
-start_address_edited = 14048
+start_address_edited = 14044
 last_player_id = 4999
 first_edited_id = 32768
 total_edit = 184
