@@ -27,7 +27,7 @@ def create_csv(filename):
             "LINES", "MIDDLE SHOOTING", "SIDE", "CENTRE", "PENALTIES", "1-TOUCH PASS", 
             "OUTSIDE", "MARKING", "SLIDING", "COVERING", "D-LINE CONTROL",
             "PENALTY STOPPER", "1-ON-1 STOPPER", "LONG THROW",
-            
+
             # Player appearence settings
             # Head
             "FACE TYPE", "SKIN COLOUR", "HEAD HEIGHT", "HEAD WIDTH", "FACE ID", "HEAD OVERALL POSITION",
@@ -38,18 +38,24 @@ def create_csv(filename):
             "MOUTH TYPE", "MOUTH SIZE", "MOUTH POSITION",
             "JAW TYPE", "JAW CHIN", "JAW WIDTH",
             # Hair
-            #"HAIR",
-            "FACIAL HAIR TYPE", "FACIAL HAIR COLOUR", 
+            #"HAIR ID", 
+            "HAIR TYPE", "HAIR SHAPE", "HAIR FRONT", "HAIR VOLUME", "HAIR DARKNESS",
+            "HAIR COLOUR CONFIG", "HAIR COLOUR RGB R", "HAIR COLOUR RGB G", "HAIR COLOUR RGB B", 
+            "BANDANA", "BANDANA COLOUR",
+            "CAP (ONLY GK)", "CAP COLOUR",
+            "FACIAL HAIR TYPE", "FACIAL HAIR COLOUR",
             "SUNGLASSES TYPE", "SUNGLASSES COLOUR",
-            
+
             # Physical
-            "HEIGHT", "WEIGHT",
+            "HEIGHT", "WEIGHT", "BODY TYPE",
             "NECK LENGTH", "NECK WIDTH", "SHOULDER HEIGHT", "SHOULDER WIDTH", "CHEST MEASUREMENT", "WAIST CIRCUMFERENCE", "ARM CIRCUMFERENCE", "LEG CIRCUMFERENCE", "CALF CIRCUMFERENCE", "LEG LENGTH", 
             
             # Boots/Acc.
             "BOOT TYPE", "BOOT COLOUR",
             "NECK WARMER", "NECKLACE TYPE", "NECKLACE COLOUR", "WISTBAND", "WISTBAND COLOUR", "FRIENDSHIP BRACELET", "FRIENDSHIP BRACELET COLOUR", "GLOVES",
             "FINGER BAND", "SHIRT", "SLEEVES", "UNDER SHORT", "UNDER SHORT COLOUR", "SOCKS", "TAPE",
+            
+            "NATIONAL TEAM", "CLUB TEAM",
             
             # Rare stats found on PES Editor Source code
             "ASW ?", "STAT X", "B F FEINT", "GK KICK", "STAT EDITED",

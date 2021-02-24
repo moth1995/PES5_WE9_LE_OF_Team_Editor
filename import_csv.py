@@ -116,10 +116,10 @@ def load_csv(of, file):
                         set_value(of, player_id, 86-48, 0, 127, csv_goal_c2)
                         
                     #if 'GROWTH TYPE' in list_of_column_names:
-                    #    csv_growth_type=int(row[list_of_column_names.index('GROWTH TYPE')])
+                        #csv_growth_type=int(row[list_of_column_names.index('GROWTH TYPE')])
                         # Here we limit the stat to already know konami range
                         #print(player_id, csv_growth_type)
-                    #    set_value(of, player_id, 87-48,7, 0x05, csv_growth_type)
+                        #set_value(of, player_id, 87-48,2, 3, csv_growth_type)
 
                     # Position settings
 
@@ -145,120 +145,120 @@ def load_csv(of, file):
                     if 'GK  0' in list_of_column_names:
                         csv_gk=int(row[list_of_column_names.index('GK  0')])
                         # Here we limit the stat to already know konami range
-                        if csv_gk<0:
-                            csv_gk=0
-                        elif csv_gk>1:
-                            csv_gk=1
+                        #if csv_gk<0:
+                        #    csv_gk=0
+                        #elif csv_gk>1:
+                        #    csv_gk=1
                         #print(player_id, csv_gk)
                         set_value(of, player_id, 8, 6, 1, csv_gk)
                         
                     if 'CWP  2' in list_of_column_names:
                         csv_cbwS=int(row[list_of_column_names.index('CWP  2')])
                         # Here we limit the stat to already know konami range
-                        if csv_cbwS<0:
-                            csv_cbwS=0
-                        elif csv_cbwS>1:
-                            csv_cbwS=1
+                        #if csv_cbwS<0:
+                        #    csv_cbwS=0
+                        #elif csv_cbwS>1:
+                        #    csv_cbwS=1
                         #print(player_id, csv_cbwS)
                         set_value(of, player_id, 8, 7, 1, csv_cbwS)
                     
                     if 'CBT  3' in list_of_column_names:
                         csv_cbt=int(row[list_of_column_names.index('CBT  3')])
                         # Here we limit the stat to already know konami range
-                        if csv_cbt<0:
-                            csv_cbt=0
-                        elif csv_cbt>1:
-                            csv_cbt=1
+                        #if csv_cbt<0:
+                        #    csv_cbt=0
+                        #elif csv_cbt>1:
+                        #    csv_cbt=1
                         #print(player_id, csv_cbt)
                         set_value(of, player_id, 12, 4, 1, csv_cbt)
                         
                     if 'SB  4' in list_of_column_names:
                         csv_sb=int(row[list_of_column_names.index('SB  4')])
                         # Here we limit the stat to already know konami range
-                        if csv_sb<0:
-                            csv_sb=0
-                        elif csv_sb>1:
-                            csv_sb=1
+                        #if csv_sb<0:
+                        #    csv_sb=0
+                        #elif csv_sb>1:
+                        #    csv_sb=1
                         #print(player_id, csv_sb)
                         set_value(of, player_id, 12, 5, 1, csv_sb)
                     
                     if 'DMF  5' in list_of_column_names:
                         csv_dm=int(row[list_of_column_names.index('DMF  5')])
                         # Here we limit the stat to already know konami range
-                        if csv_dm<0:
-                            csv_dm=0
-                        elif csv_dm>1:
-                            csv_dm=1
+                        #if csv_dm<0:
+                        #    csv_dm=0
+                        #elif csv_dm>1:
+                        #    csv_dm=1
                         #print(player_id, csv_dm)
                         set_value(of, player_id, 12, 6, 1, csv_dm)
                         
                     if 'WB  6' in list_of_column_names:
                         csv_wb=int(row[list_of_column_names.index('WB  6')])
                         # Here we limit the stat to already know konami range
-                        if csv_wb<0:
-                            csv_wb=0
-                        elif csv_wb>1:
-                            csv_wb=1
+                        #if csv_wb<0:
+                        #    csv_wb=0
+                        #elif csv_wb>1:
+                        #    csv_wb=1
                         #print(player_id, csv_wb)
                         set_value(of, player_id, 12, 7, 1, csv_wb)
                         
                     if 'CMF  7' in list_of_column_names:
                         csv_cm=int(row[list_of_column_names.index('CMF  7')])
                         # Here we limit the stat to already know konami range
-                        if csv_cm<0:
-                            csv_cm=0
-                        elif csv_cm>1:
-                            csv_cm=1
+                        #if csv_cm<0:
+                        #    csv_cm=0
+                        #elif csv_cm>1:
+                        #    csv_cm=1
                         #print(player_id, csv_cm)
                         set_value(of, player_id, 16, 4, 1, csv_cm)
                         
                     if 'SMF  8' in list_of_column_names:
                         csv_sm=int(row[list_of_column_names.index('SMF  8')])
                         # Here we limit the stat to already know konami range
-                        if csv_sm<0:
-                            csv_sm=0
-                        elif csv_sm>1:
-                            csv_sm=1
+                        #if csv_sm<0:
+                        #    csv_sm=0
+                        #elif csv_sm>1:
+                        #    csv_sm=1
                         #print(player_id, csv_sm)
                         set_value(of, player_id, 16, 5, 1, csv_sm)
                         
                     if 'AMF  9' in list_of_column_names:
                         csv_om=int(row[list_of_column_names.index('AMF  9')])
                         # Here we limit the stat to already know konami range
-                        if csv_om<0:
-                            csv_om=0
-                        elif csv_om>1:
-                            csv_om=1
+                        #if csv_om<0:
+                        #    csv_om=0
+                        #elif csv_om>1:
+                        #    csv_om=1
                         #print(player_id, csv_om)
                         set_value(of, player_id, 16, 6, 1, csv_om)
                         
                     if 'WF 10' in list_of_column_names:
                         csv_wg=int(row[list_of_column_names.index('WF 10')])
                         # Here we limit the stat to already know konami range
-                        if csv_wg<0:
-                            csv_wg=0
-                        elif csv_wg>1:
-                            csv_wg=1
+                        #if csv_wg<0:
+                        #    csv_wg=0
+                        #elif csv_wg>1:
+                        #    csv_wg=1
                         #print(player_id, csv_wg)
                         set_value(of, player_id, 16, 7, 1, csv_wg)
                         
                     if 'SS  11' in list_of_column_names:
                         csv_ss=int(row[list_of_column_names.index('SS  11')])
                         # Here we limit the stat to already know konami range
-                        if csv_ss<0:
-                            csv_ss=0
-                        elif csv_ss>1:
-                            csv_ss=1
+                        #if csv_ss<0:
+                        #    csv_ss=0
+                        #elif csv_ss>1:
+                        #    csv_ss=1
                         #print(player_id, csv_ss)
                         set_value(of, player_id, 20, 4, 1, csv_ss)
                         
                     if 'CF  12' in list_of_column_names:
                         csv_cf=int(row[list_of_column_names.index('CF  12')])
                         # Here we limit the stat to already know konami range
-                        if csv_cf<0:
-                            csv_cf=0
-                        elif csv_cf>1:
-                            csv_cf=1
+                        #if csv_cf<0:
+                        #    csv_cf=0
+                        #elif csv_cf>1:
+                        #    csv_cf=1
                         #print(player_id, csv_cf)
                         set_value(of, player_id, 20, 5, 1, csv_cf)
                         
@@ -974,6 +974,104 @@ def load_csv(of, file):
                         #print(player_id, csv_hair)
                         #set_value(of, player_id, 45, 0, 2047, csv_hair)
 
+                    # If we dont find any of those columns in our csv file we dont import the hair attributes
+                    if (("HAIR TYPE" in list_of_column_names) and ("HAIR SHAPE" in list_of_column_names) and ("HAIR FRONT" in list_of_column_names) and ("HAIR VOLUME" in list_of_column_names) and ("HAIR DARKNESS" in list_of_column_names) and ("BANDANA" in list_of_column_names)):
+                        csv_hair = 0
+                        csv_hair_type = row[list_of_column_names.index('HAIR TYPE')]
+                        csv_hair_shape = int(row[list_of_column_names.index('HAIR SHAPE')]) - 1
+                        csv_hair_front = int(row[list_of_column_names.index('HAIR FRONT')]) - 1
+                        csv_hair_volume = int(row[list_of_column_names.index('HAIR VOLUME')]) - 1
+                        csv_hair_darkness = int(row[list_of_column_names.index('HAIR DARKNESS')]) - 1
+                        csv_hair_bandana = int(row[list_of_column_names.index('BANDANA')])
+
+                        if csv_hair_type == 'BALD':
+                            csv_hair = csv_hair_shape
+
+                        elif csv_hair_type == 'BUZZ CUT':
+                            csv_hair = 4 + (csv_hair_darkness) + (csv_hair_front * 4) + (csv_hair_shape * 20)
+
+                        elif csv_hair_type == 'VERY SHORT 1':
+                            csv_hair = 84 + (csv_hair_front) + (csv_hair_shape * 6)
+
+                        elif csv_hair_type == 'VERY SHORT 2':
+                            if 0 <= csv_hair_shape <= 2:
+                                csv_hair = 108 + (csv_hair_shape * 10) + (csv_hair_front)
+                            else:
+                                csv_hair = 138 + ((csv_hair_shape - 3) * 5) + (csv_hair_front)
+
+                        elif csv_hair_type == 'STRAIGHT 1':
+                            if 0 <= csv_hair_front <= 8:
+                                csv_hair = 153 + csv_hair_bandana + csv_hair_volume * 3 + csv_hair_front * 9 + csv_hair_shape * 102
+                            else:
+                                csv_hair = 234 + csv_hair_volume + (csv_hair_front - 9) * 3 + csv_hair_shape * 102
+
+                        elif csv_hair_type == 'STRAIGHT 2':
+                            if 0 <= csv_hair_front <= 1:
+                                csv_hair = 561 + csv_hair_bandana + csv_hair_volume * 3 + csv_hair_front * 9 + csv_hair_shape * 33
+                            else:
+                                csv_hair = 579 + csv_hair_volume + (csv_hair_front - 2) * 3 + csv_hair_shape * 33
+                                
+                        elif csv_hair_type == 'CURLY 1':
+                            if 0 <= csv_hair_front <= 4:
+                                csv_hair = 660 + csv_hair_bandana + csv_hair_volume * 3 + csv_hair_front * 9 + csv_hair_shape * 51
+                            else:
+                                csv_hair = 705 + csv_hair_volume + (csv_hair_front - 5) * 3 + csv_hair_shape * 51
+
+                        elif csv_hair_type == 'CURLY 2':
+                            csv_hair = 864 + csv_hair_volume + csv_hair_front * 2 + csv_hair_shape * 12
+
+                        elif csv_hair_type == 'PONYTAIL 1':
+                            csv_hair = 912 + csv_hair_volume + csv_hair_front * 3 + csv_hair_shape * 12
+
+                        elif csv_hair_type == 'PONYTAIL 2':
+                            csv_hair = 948 + csv_hair_volume + csv_hair_front * 3 + csv_hair_shape * 12
+
+                        elif csv_hair_type == 'DREADLOCKS':
+                            csv_hair = 984 + csv_hair_volume + csv_hair_front * 2 + csv_hair_shape * 8
+
+                        elif csv_hair_type == 'PULLED BACK':
+                            csv_hair = 1008 + csv_hair_front + csv_hair_shape * 6
+
+                        elif csv_hair_type == 'SPECIAL HAIRSTYLES':
+                            csv_hair = 1026 + csv_hair_shape
+
+                        set_value(of, player_id, 93-48, 0, 2047, csv_hair)
+
+                    if 'HAIR COLOUR CONFIG' in list_of_column_names:
+                        csv_hair_colour_config = int(row[list_of_column_names.index('HAIR COLOUR CONFIG')]) - 1
+                        #print(player_id, csv_hair_colour_config)
+                        set_value(of, player_id, 94-48, 3, 63, csv_hair_colour_config)
+
+                    if 'HAIR COLOUR RGB R' in list_of_column_names:
+                        csv_hair_rgb_r = (int(row[list_of_column_names.index('HAIR COLOUR RGB R')]) * - 1) + 63
+                        #print(player_id, csv_hair_rgb_r)
+                        set_value(of, player_id, 102-48, 5, 63, csv_hair_rgb_r)
+
+                    if 'HAIR COLOUR RGB G' in list_of_column_names:
+                        csv_hair_rgb_g = (int(row[list_of_column_names.index('HAIR COLOUR RGB G')]) * - 1) + 63
+                        #print(player_id, csv_hair_rgb_g)
+                        set_value(of, player_id, 103-48, 3, 63, csv_hair_rgb_g)
+
+                    if 'HAIR COLOUR RGB B' in list_of_column_names:
+                        csv_hair_rgb_b = (int(row[list_of_column_names.index('HAIR COLOUR RGB B')]) * - 1) + 63
+                        #print(player_id, csv_hair_rgb_b)
+                        set_value(of, player_id, 104-48, 1, 63, csv_hair_rgb_b)
+
+                    if 'BANDANA COLOUR' in list_of_column_names:
+                        csv_hair_bandana_colour = int(row[list_of_column_names.index('BANDANA COLOUR')]) - 1
+                        #print(player_id, csv_hair_bandana_colour)
+                        set_value(of, player_id, 109-48, 2, 7, csv_hair_bandana_colour)
+
+                    if 'CAP (ONLY GK)' in list_of_column_names:
+                        csv_cap = int(row[list_of_column_names.index('CAP (ONLY GK)')])
+                        #print(player_id, csv_cap)
+                        set_value(of, player_id, 98-48, 6, 1, csv_cap)
+
+                    if 'CAP COLOUR' in list_of_column_names:
+                        csv_cap_colour = int(row[list_of_column_names.index('CAP COLOUR')]) - 1
+                        #print(player_id, csv_cap_colour)
+                        set_value(of, player_id, 114-48, 3, 7, csv_cap_colour)
+
                     if 'FACIAL HAIR TYPE' in list_of_column_names:
                         csv_facial_hair_type = int(row[list_of_column_names.index('FACIAL HAIR TYPE')])
                         #print(player_id, csv_facial_hair_type)
@@ -1007,55 +1105,91 @@ def load_csv(of, file):
                         #print(player_id, csv_weight)
                         set_value(of, player_id, 41, 6, 127, csv_weight)
 
-                    if 'NECK LENGTH' in list_of_column_names:
-                        csv_neck_length = int(row[list_of_column_names.index('NECK LENGTH')]) + 7
-                        #print(player_id, csv_neck_length)
-                        set_value(of, player_id, 57, 2, 15, csv_neck_length)
+                    if 'BODY TYPE' in list_of_column_names:
+                        csv_body_type=(row[list_of_column_names.index('BODY TYPE')])
+                        if csv_body_type == "Edited":
 
-                    if 'NECK WIDTH' in list_of_column_names:
-                        csv_neck_width = int(row[list_of_column_names.index('NECK WIDTH')]) + 7
-                        #print(player_id, csv_neck_width)
-                        set_value(of, player_id, 44, 3, 15, csv_neck_width)
+                            if 'NECK LENGTH' in list_of_column_names:
+                                csv_neck_length = int(row[list_of_column_names.index('NECK LENGTH')]) + 7
+                                #print(player_id, csv_neck_length)
+                                set_value(of, player_id, 57, 2, 15, csv_neck_length)
 
-                    if 'SHOULDER HEIGHT' in list_of_column_names:
-                        csv_shoulder_height = int(row[list_of_column_names.index('SHOULDER HEIGHT')]) + 7
-                        #print(player_id, csv_shoulder_height)
-                        set_value(of, player_id, 61, 5, 15, csv_shoulder_height)
+                            if 'NECK WIDTH' in list_of_column_names:
+                                csv_neck_width = int(row[list_of_column_names.index('NECK WIDTH')]) + 7
+                                #print(player_id, csv_neck_width)
+                                set_value(of, player_id, 44, 3, 15, csv_neck_width)
 
-                    if 'SHOULDER WIDTH' in list_of_column_names:
-                        csv_should_width = int(row[list_of_column_names.index('SHOULDER WIDTH')]) + 7
-                        #print(player_id, csv_should_width)
-                        set_value(of, player_id, 62, 1, 15, csv_should_width)
+                            if 'SHOULDER HEIGHT' in list_of_column_names:
+                                csv_shoulder_height = int(row[list_of_column_names.index('SHOULDER HEIGHT')]) + 7
+                                #print(player_id, csv_shoulder_height)
+                                set_value(of, player_id, 61, 5, 15, csv_shoulder_height)
 
-                    if 'CHEST MEASUREMENT' in list_of_column_names:
-                        csv_chest_measu = int(row[list_of_column_names.index('CHEST MEASUREMENT')]) + 7
-                        #print(player_id, csv_chest_measu)
-                        set_value(of, player_id, 57, 6, 15, csv_chest_measu)
+                            if 'SHOULDER WIDTH' in list_of_column_names:
+                                csv_should_width = int(row[list_of_column_names.index('SHOULDER WIDTH')]) + 7
+                                #print(player_id, csv_should_width)
+                                set_value(of, player_id, 62, 1, 15, csv_should_width)
 
-                    if 'WAIST CIRCUMFERENCE' in list_of_column_names:
-                        csv_waist_circu = int(row[list_of_column_names.index('WAIST CIRCUMFERENCE')]) + 7
-                        #print(player_id, csv_waist_circu)
-                        set_value(of, player_id, 58, 6, 15, csv_waist_circu)
+                            if 'CHEST MEASUREMENT' in list_of_column_names:
+                                csv_chest_measu = int(row[list_of_column_names.index('CHEST MEASUREMENT')]) + 7
+                                #print(player_id, csv_chest_measu)
+                                set_value(of, player_id, 57, 6, 15, csv_chest_measu)
 
-                    if 'ARM CIRCUMFERENCE' in list_of_column_names:
-                        csv_arm_circu = int(row[list_of_column_names.index('ARM CIRCUMFERENCE')]) + 7
-                        #print(player_id, csv_arm_circu)
-                        set_value(of, player_id, 58, 2, 15, csv_arm_circu)
+                            if 'WAIST CIRCUMFERENCE' in list_of_column_names:
+                                csv_waist_circu = int(row[list_of_column_names.index('WAIST CIRCUMFERENCE')]) + 7
+                                #print(player_id, csv_waist_circu)
+                                set_value(of, player_id, 58, 6, 15, csv_waist_circu)
 
-                    if 'LEG CIRCUMFERENCE' in list_of_column_names:
-                        csv_leg_circu = int(row[list_of_column_names.index('LEG CIRCUMFERENCE')]) + 7
-                        #print(player_id, csv_leg_circu)
-                        set_value(of, player_id, 59, 2, 15, csv_leg_circu)
+                            if 'ARM CIRCUMFERENCE' in list_of_column_names:
+                                csv_arm_circu = int(row[list_of_column_names.index('ARM CIRCUMFERENCE')]) + 7
+                                #print(player_id, csv_arm_circu)
+                                set_value(of, player_id, 58, 2, 15, csv_arm_circu)
 
-                    if 'CALF CIRCUMFERENCE' in list_of_column_names:
-                        csv_calf_circu = int(row[list_of_column_names.index('CALF CIRCUMFERENCE')]) + 7
-                        #print(player_id, csv_calf_circu)
-                        set_value(of, player_id, 59, 6, 15, csv_calf_circu)
+                            if 'LEG CIRCUMFERENCE' in list_of_column_names:
+                                csv_leg_circu = int(row[list_of_column_names.index('LEG CIRCUMFERENCE')]) + 7
+                                #print(player_id, csv_leg_circu)
+                                set_value(of, player_id, 59, 2, 15, csv_leg_circu)
 
-                    if 'LEG LENGTH' in list_of_column_names:
-                        csv_leg_length = int(row[list_of_column_names.index('LEG LENGTH')]) + 7
-                        #print(player_id, csv_leg_length)
-                        set_value(of, player_id, 60, 4, 15, csv_leg_length)
+                            if 'CALF CIRCUMFERENCE' in list_of_column_names:
+                                csv_calf_circu = int(row[list_of_column_names.index('CALF CIRCUMFERENCE')]) + 7
+                                #print(player_id, csv_calf_circu)
+                                set_value(of, player_id, 59, 6, 15, csv_calf_circu)
+
+                            if 'LEG LENGTH' in list_of_column_names:
+                                csv_leg_length = int(row[list_of_column_names.index('LEG LENGTH')]) + 7
+                                #print(player_id, csv_leg_length)
+                                set_value(of, player_id, 60, 4, 15, csv_leg_length)
+                        else:
+                            csv_body_type=int(row[list_of_column_names.index('BODY TYPE')]) -1
+
+                            #print(player_id, csv_neck_length)
+                            set_value(of, player_id, 57, 2, 15, body_types[csv_body_type][0] + 7)
+
+                            #print(player_id, csv_neck_width)
+                            set_value(of, player_id, 44, 3, 15, body_types[csv_body_type][1] + 7)
+
+                            #print(player_id, csv_shoulder_height)
+                            set_value(of, player_id, 61, 5, 15, body_types[csv_body_type][2] + 7)
+
+                            #print(player_id, csv_should_width)
+                            set_value(of, player_id, 62, 1, 15, body_types[csv_body_type][3] + 7)
+
+                            #print(player_id, csv_chest_measu)
+                            set_value(of, player_id, 57, 6, 15, body_types[csv_body_type][4] + 7)
+
+                            #print(player_id, csv_waist_circu)
+                            set_value(of, player_id, 58, 6, 15, body_types[csv_body_type][5] + 7)
+
+                            #print(player_id, csv_arm_circu)
+                            set_value(of, player_id, 58, 2, 15, body_types[csv_body_type][6] + 7)
+
+                            #print(player_id, csv_leg_circu)
+                            set_value(of, player_id, 59, 2, 15, body_types[csv_body_type][7] + 7)
+
+                            #print(player_id, csv_calf_circu)
+                            set_value(of, player_id, 59, 6, 15, body_types[csv_body_type][8] + 7)
+
+                            #print(player_id, csv_leg_length)
+                            set_value(of, player_id, 60, 4, 15, body_types[csv_body_type][9] + 7)
 
                     # Boots/Acc.
                     if 'BOOT TYPE' in list_of_column_names:
@@ -1147,10 +1281,10 @@ def load_csv(of, file):
                     if 'ASW ?' in list_of_column_names:
                         csv_cbwL=int(row[list_of_column_names.index('ASW ?')])
                         # Here we limit the stat to already know konami range
-                        if csv_cbwL<0:
-                            csv_cbwL=0
-                        elif csv_cbwL>1:
-                            csv_cbwL=1
+                        #if csv_cbwL<0:
+                        #    csv_cbwL=0
+                        #elif csv_cbwL>1:
+                        #    csv_cbwL=1
                         #print(player_id, csv_cbwL)
                         set_value(of, player_id, 11, 14, 1, csv_cbwL)
                         
@@ -1205,8 +1339,8 @@ def load_csv(of, file):
                     # first iteration itself 
                     #break
                 return True
-    except EnvironmentError: # parent of IOError, OSError *and* WindowsError where available
-        #print ("something happened")
+    except EnvironmentError as e: # parent of IOError, OSError *and* WindowsError where available
+        print (e)
         return False
 
 nationalities = ["Austria", "Belgium", "Bulgaria", "Croatia", "Czech Republic", "Denmark", "England", "Finland", "France", "Germany", "Greece", 
@@ -1218,3 +1352,14 @@ nationalities = ["Austria", "Belgium", "Bulgaria", "Croatia", "Czech Republic", 
 "Angola", "Burkina Faso", "Cape Verde", "Congo", "DR Congo", "Egypt", "Equatorial Guinea", "Gabon", "Gambia", "Ghana", "Guinea", "Guinea-Bissau", "Liberia", 
 "Libya", "Mali", "Mauritius", "Mozambique", "Namibia", "Sierra Leone", "Togo", "Zambia", "Zimbabwe", "Canada", "Grenada", "Guadeloupe", "Guatemala", "Honduras", 
 "Jamaica", "Martinique", "Netherlands Antilles", "Panama", "Trinidad and Tobago", "Bolivia", "Guyana", "Uzbekistan", "New Zealand", "Free Nationality" ]
+
+body_types = [
+[-1, 0, -2, -2, -1, 0, -1, 1, 0, -2],
+[-2, 0, 1, 1, 2, 0, 1, 1, 0, -1],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 1, 1, 0, 0, 0, -1, -2, 2],
+[2, 0, 1, 1, 1, 0, 0, 0, -2, 4],
+[-3, 0, 3, 1, 0, 0, 2, 3, 2, -2],
+[-1, 0, 0, 2, 0, 0, 0, 1, 0, 2],
+[-2, 0, 2, 2, 2, 0, 2, 2, 0 ,2]
+]
