@@ -3,7 +3,7 @@ from COFPES_OF_Editor_5.editor.utils.common_functions import zero_fill_right_shi
 # Thanks to evo-web's user mattmid for helping me with various player attributes!
 
 # This function is use to get option file data into integer and assign it to a variable
-from teams import get_players_nations, get_players_clubs
+from teams import get_players_nations, get_players_clubs, get_players_ml
 
 
 def get_value(of, player_id, offset, shift, mask, stat_name):
@@ -151,7 +151,7 @@ def set_shirt_name(of, player_id, new_shirt_name):
             of.data[shirt_name_address + i] = byte
 
 
-def get_stats(player_id, of):
+def get_stats(player_id, of, rare_stats_flag):
     # Basic seetings
     player_name, player_shirt_name = get_names(player_id, of)
     player_callName = get_value(of, player_id, 49-48, 0, 65535, "Callname ID")
@@ -625,6 +625,10 @@ def get_stats(player_id, of):
         if player_id in club_validation:
             player_club=of.clubs[i].name
             break
+    ml_united_squad = get_players_ml(of)
+    if player in ml_united_squad:
+        player_club = "ML United"
+
     player_national_team = "Not Registered"
     for i in range(0,64):
         club_validation=get_players_nations(of,i)
@@ -632,7 +636,20 @@ def get_stats(player_id, of):
         if player_id in club_validation:
             player_national_team=national_teams[i]
             break
-    return ([
+
+
+    player_special_flag = ""
+    if player_id in fake_players:
+        player_special_flag = "Fake Player"
+    elif player_id in elastico_players:
+        player_special_flag = "Elastico Move"
+    elif player_id in shop_players:
+        player_special_flag = "Shop"
+    elif player_id in ml_old:
+        player_special_flag = "ML Old"
+    elif player_id in ml_youth:
+        player_special_flag = "ML Youth"
+    list_csv=[
     
     # Here we return all the stats to make a beautiful csv file
     
@@ -683,12 +700,13 @@ def get_stats(player_id, of):
     player_finger_band, player_shirt, player_sleeves, player_under_short, player_under_short_colour, player_socks, player_tape,
     
     # Player registration in club and national team
-    player_national_team, player_club,
+    player_national_team, player_club, player_special_flag,
     
-    # Rare stats found on PES Editor Source code
-    player_cbwL, player_statX, player_bff, player_gkKick, player_statEdited
-    ])
-
+    ]
+    if rare_stats_flag:
+         # Rare stats found on PES Editor Source code
+        list_csv+= [player_cbwL, player_statX, player_bff, player_gkKick, player_statEdited]
+    return list_csv
 
 
 start_address = 36872
@@ -726,3 +744,37 @@ body_types = [
 [-1, 0, 0, 2, 0, 0, 0, 1, 0, 2],
 [-2, 0, 2, 2, 2, 0, 2, 2, 0 ,2]
 ]
+
+
+
+
+# Thanks a lot to Fabri55 from Evo-Web for the list of fake players
+
+fake_players = [
+ 229, 77, 216, 103, 676, 722, 57, 350, 359, 
+ 366, 1274, 352, 1037, 361, 838, 769, 675, 
+ 213, 723, 358, 220, 211, 1239, 1287, 540, 
+ 217, 102, 218, 212, 1271, 219, 367, 964, 
+ 539, 74, 1225, 1228, 356, 460, 1273, 79, 
+ 949, 355, 101, 228, 214, 363, 536, 761, 
+ 72, 365, 351, 346, 210, 1229
+ ]
+
+# Information taken from  https://www.neoseeker.com/forums/25233/t548037-tricks-skills/21.htm and also testing in game
+
+elastico_players = [
+999, # Ronaldinho - Brazil - FC Barcelona
+1000, # Ronaldo - Brazil - Real Madrid
+631, # Zlatan Ibrahimovic - Sweden - Juventus
+2531, # Naohiro Takahara - Not registered - Hamburg
+446, # Cristiano Ronaldo - Portugal - Manchester United
+1635, # Djibril Cisse - Not registered - Liverpool
+628, # Christian Wilhelmsson - Sweden - Anderlecht
+1712, # James Milner - Not registered - Newcastle
+3249, # Mauro Rosales - Not registered - Ajax
+1342, # Lidoanho (Rivelino) - Classic Brazil - None
+ ]
+
+shop_players = [*range(4558, 4686, 1)]
+ml_youth = [*range(4686, 4886, 1)]
+ml_old = [*range(4886, 4896, 1)]

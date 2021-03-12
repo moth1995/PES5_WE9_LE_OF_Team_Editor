@@ -1,12 +1,12 @@
 import csv
 
 
-def create_csv(filename):
+def create_csv(filename, extra_stats_flag):
     #creamos el csv
     try:
         with open(filename, 'w',newline='', encoding='utf-8') as f:
             csv_escribir = csv.writer(f)
-            csv_escribir.writerow([
+            csv_columns=([
             
             # Player basic settings
             "ID","NAME","SHIRT_NAME", "CALLNAME ID", "NATIONALITY", "AGE", "STRONG FOOT", "INJURY TOLERANCE", 
@@ -55,12 +55,13 @@ def create_csv(filename):
             "NECK WARMER", "NECKLACE TYPE", "NECKLACE COLOUR", "WISTBAND", "WISTBAND COLOUR", "FRIENDSHIP BRACELET", "FRIENDSHIP BRACELET COLOUR", "GLOVES",
             "FINGER BAND", "SHIRT", "SLEEVES", "UNDER SHORT", "UNDER SHORT COLOUR", "SOCKS", "TAPE",
             
-            "NATIONAL TEAM", "CLUB TEAM",
-            
-            # Rare stats found on PES Editor Source code
-            "ASW ?", "STAT X", "B F FEINT", "GK KICK", "STAT EDITED",
-            
+            "NATIONAL TEAM", "CLUB TEAM", "SPECIAL FLAG",
             ])
+            # Rare stats found on PES Editor Source code
+            if extra_stats_flag:
+                csv_columns+=["ASW ?", "STAT X", "B F FEINT", "GK KICK", "STAT EDITED"]
+            
+            csv_escribir.writerow(csv_columns)
         return filename
     except EnvironmentError: # parent of IOError, OSError *and* WindowsError where available
         return False
@@ -68,8 +69,8 @@ def create_csv(filename):
 
 
 
-def write_csv(filename,players):
-    file=create_csv(filename)
+def write_csv(filename, players, extra_stats_flag):
+    file=create_csv(filename, extra_stats_flag)
     if file:
         with open(file, 'a',newline='', encoding='utf-8') as f:
             csv_out=csv.writer(f)

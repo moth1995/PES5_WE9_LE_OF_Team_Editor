@@ -161,7 +161,7 @@ def load_csv(of, file):
                         #    csv_cbwS=1
                         #print(player_id, csv_cbwS)
                         set_value(of, player_id, 8, 7, 1, csv_cbwS)
-                    
+
                     if 'CBT  3' in list_of_column_names:
                         csv_cbt=int(row[list_of_column_names.index('CBT  3')])
                         # Here we limit the stat to already know konami range
@@ -171,7 +171,7 @@ def load_csv(of, file):
                         #    csv_cbt=1
                         #print(player_id, csv_cbt)
                         set_value(of, player_id, 12, 4, 1, csv_cbt)
-                        
+
                     if 'SB  4' in list_of_column_names:
                         csv_sb=int(row[list_of_column_names.index('SB  4')])
                         # Here we limit the stat to already know konami range
@@ -181,17 +181,14 @@ def load_csv(of, file):
                         #    csv_sb=1
                         #print(player_id, csv_sb)
                         set_value(of, player_id, 12, 5, 1, csv_sb)
-                    
+
                     if 'DMF  5' in list_of_column_names:
                         csv_dm=int(row[list_of_column_names.index('DMF  5')])
                         # Here we limit the stat to already know konami range
-                        #if csv_dm<0:
-                        #    csv_dm=0
-                        #elif csv_dm>1:
-                        #    csv_dm=1
-                        #print(player_id, csv_dm)
+                        if player_id==1474:
+                            print(player_id, csv_dm)
                         set_value(of, player_id, 12, 6, 1, csv_dm)
-                        
+
                     if 'WB  6' in list_of_column_names:
                         csv_wb=int(row[list_of_column_names.index('WB  6')])
                         # Here we limit the stat to already know konami range
@@ -201,7 +198,7 @@ def load_csv(of, file):
                         #    csv_wb=1
                         #print(player_id, csv_wb)
                         set_value(of, player_id, 12, 7, 1, csv_wb)
-                        
+
                     if 'CMF  7' in list_of_column_names:
                         csv_cm=int(row[list_of_column_names.index('CMF  7')])
                         # Here we limit the stat to already know konami range

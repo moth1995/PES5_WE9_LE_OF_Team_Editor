@@ -16,7 +16,38 @@ from player_data import get_stats, set_value, get_value
 from export_csv import write_csv
 from import_csv import load_csv
 from of_crypt import of_encrypter, of_decrypter
-from teams import get_players_nations, get_players_clubs
+from teams import get_players_nations, get_players_clubs, get_formation, get_formation_generic, set_formation, set_formation_generic
+
+def export_formation_btn_action():
+    try:
+        root.temp_file = filedialog.asksaveasfile(initialdir=".",title="Save formation", mode='wb', filetypes=(("Bin files","*.bin"),("All files", "*")), defaultextension=".bin")
+        if root.temp_file is None:
+            return
+        with open(root.temp_file.name, "wb") as binary_file:
+            binary_file.write(get_formation_generic(of, teamform_cmb.current()))
+        messagebox.showinfo(title=appname,message="Formation file created!")
+    except OSError as err:
+        #print("OS error: {0}".format(err))
+        messagebox.showerror(title=appname,message="OS error: {0}".format(err))
+    except EnvironmentError: # parent of IOError, OSError *and* WindowsError where available
+        messagebox.showerror(title=appname,message="Error while creating file, please run as admin\nError: {0}".format(err))
+
+def import_formation_btn_action():
+    try:
+        root.temp_file = filedialog.askopenfilename(initialdir=".",title="Select your formation file", filetypes=(("Bin files","*.bin"),("All files", "*")))
+        if root.temp_file is None:
+            return
+        with open(root.temp_file, "rb") as binary_file:
+            set_formation_generic(of, teamform_cmb.current(), bytearray(binary_file.read()))
+        messagebox.showinfo(title=appname,message="Formation imported!")
+        save_btn_action()
+    except OSError as err:
+        #print("OS error: {0}".format(err))
+        messagebox.showerror(title=appname,message="OS error: {0}".format(err))
+    except EnvironmentError as err: # parent of IOError, OSError *and* WindowsError where available
+        messagebox.showerror(title=appname,message="Error while reading the file, please run as admin\nError: {0}".format(err))
+
+
 
 def decrypt_btn_action():
     root.temp_file = filedialog.asksaveasfile(initialdir=".",title="Create your decrypted OF", mode='wb', filetypes=(("Bin files","*.bin"),("All files", "*")), defaultextension=".bin")
@@ -45,11 +76,11 @@ def export_all_to_csv():
             players_ids=[*range(1, 5000, 1)]+[*range(32768, 32952, 1)]
         all_data=[]
         for player in players_ids:
-            all_data.append(get_stats(player,of))
+            all_data.append(get_stats(player, of, extra_stats_check.get()))
         root.new_file = filedialog.asksaveasfile(initialdir=".",title="Create your CSV file", mode='w', filetypes=(("CSV files","*.csv"),("All files", "*")), defaultextension=".csv")
         if root.new_file is None: # asksaveasfile return `None` if dialog closed with "cancel".
             return
-        if write_csv(root.new_file.name,all_data):
+        if write_csv(root.new_file.name, all_data, extra_stats_check.get()):
             messagebox.showinfo(title=appname,message="CSV file created!")
         else:
             messagebox.showerror(title=appname,message="Error while creating CSV file, please run as admin")
@@ -59,26 +90,26 @@ def export_all_to_csv():
         for player in players_ids:
             if player==0:
                 continue
-            all_data.append(get_stats(player,of))
+            all_data.append(get_stats(player, of, extra_stats_check.get()))
         root.new_file = filedialog.asksaveasfile(initialdir=".",title="Create your CSV file", mode='w', filetypes=(("CSV files","*.csv"),("All files", "*")), defaultextension=".csv")
         if root.new_file is None: # asksaveasfile return `None` if dialog closed with "cancel".
             return
-        if write_csv(root.new_file.name,all_data):
+        if write_csv(root.new_file.name, all_data, extra_stats_check.get()):
             messagebox.showinfo(title=appname,message="CSV file created!")
         else:
             messagebox.showerror(title=appname,message="Error while creating CSV file, please run as admin")
     elif 65<= option_selected <= 202:
         players_ids=get_players_clubs(of,option_selected-1)
-        print(players_ids)
+        #print(players_ids)
         all_data=[]
         for player in players_ids:
             if player==0:
                 continue
-            all_data.append(get_stats(player,of))
+            all_data.append(get_stats(player, of, extra_stats_check.get()))
         root.new_file = filedialog.asksaveasfile(initialdir=".",title="Create your CSV file", mode='w', filetypes=(("CSV files","*.csv"),("All files", "*")), defaultextension=".csv")
         if root.new_file is None: # asksaveasfile return `None` if dialog closed with "cancel".
             return
-        if write_csv(root.new_file.name,all_data):
+        if write_csv(root.new_file.name,all_data, extra_stats_check.get()):
             messagebox.showinfo(title=appname,message="CSV file created!")
         else:
             messagebox.showerror(title=appname,message="Error while creating CSV file, please run as admin")
@@ -103,7 +134,7 @@ def swap_list_positions(teams_list, pos1, pos2):
 def swap_btn_action():
     global teams_list
     if ((0 <= team_a_cmb.current() <= 63) and (0 <= team_b_cmb.current() <= 63)):
-        if swap_nations_data(of.data,team_a_cmb.current(),team_b_cmb.current()):
+        if swap_nations_data(of.data, team_a_cmb.current(), team_b_cmb.current(), swap_kits_check.get()):
             teams_list=swap_list_positions(teams_list, team_a_cmb.current(), team_b_cmb.current())
             team_a_cmb.config(values=teams_list)
             team_b_cmb.config(values=teams_list)
@@ -111,7 +142,7 @@ def swap_btn_action():
         else:
             messagebox.showerror(title=appname,message="Can't swap the same team!!!")
     elif ((64 <= team_a_cmb.current() <= 201) and (64 <= team_b_cmb.current() <= 201)):
-        if swap_teams_data(of.data,team_a_cmb.current(),team_b_cmb.current()):
+        if swap_teams_data(of.data, team_a_cmb.current(), team_b_cmb.current(), swap_kits_check.get()):
             teams_list=swap_list_positions(teams_list, team_a_cmb.current(), team_b_cmb.current())
             team_a_cmb.config(values=teams_list)
             team_b_cmb.config(values=teams_list)
@@ -168,13 +199,13 @@ else:
 players_ids=[*range(1, 5000, 1)]+[*range(32768, 32952, 1)]
 all_data=[]
 for player_id in players_ids:
-    all_data.append(int(get_value(of,player_id,102-48, 5, 62, "Head overall position")))
+    all_data.append(int(get_value(of,player_id,12, 6, 1, "Head overall position")))
 
 
 #validate=[*range(0, 8, 1)]#+[*range(0, 6, 1)]
 #validate = [0,1,2,3,4,5,6]
 #validate = [6,5,4,3,2,1,0]
-validate = [5, 0, 1, 2, 3, 4]
+validate = [0, 0, 1, 0, 0, 1, 1, 1]
 #validate = [63,62,0]
 print(validate)
 test=[]
@@ -185,21 +216,21 @@ for shift in range(0,65536):
         #if mask==2047:
         #    print("llegamos al punto conocido")
         #mask=12
-        offset = 87-48
+        offset = 12
         stat_name = ""
-        test.append((get_value(of,4533,offset, shift, mask, stat_name) ))
-        test.append((get_value(of,1484,offset, shift, mask, stat_name) ))
-        test.append((get_value(of,193,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,1,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,2,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,3,offset, shift, mask, stat_name) ))
         
-        test.append((get_value(of,195,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,4,offset, shift, mask, stat_name) ))
         
-        test.append((get_value(of,1007,offset, shift, mask, stat_name) ))
-        test.append((get_value(of,1485,offset,shift, mask, stat_name) ))
+        test.append((get_value(of,5,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,6,offset,shift, mask, stat_name) ))
         
         
 
-        #test.append((get_value(of,,offset, shift, mask, stat_name) ))
-        #test.append((get_value(of,62,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,7,offset, shift, mask, stat_name) ))
+        test.append((get_value(of,8,offset, shift, mask, stat_name) ))
         
         #test.append((get_value(of,690,offset, shift, mask, stat_name) ))
         #test.append((get_value(of,4473,offset, shift, mask, stat_name) ))
@@ -239,31 +270,44 @@ teams_list+=get_of_names(of)
 csv_team_list = ["---ALL PLAYERS---"] + teams_list
 #print(csv_team_list)
 
+
+
 team_a_lbl=Label(swap_teams_tab, text="Team A")
 team_b_lbl=Label(swap_teams_tab, text="Team B")
 team_a_cmb=ttk.Combobox(swap_teams_tab, state="readonly", value=teams_list, width=30)
 team_b_cmb=ttk.Combobox(swap_teams_tab, state="readonly", value=teams_list, width=30)
-
+swap_kits_check = IntVar()
+swap_kits_check.set(0)
+swap_kits_check_btn = Checkbutton(swap_teams_tab, text="Swap OF kits", variable=swap_kits_check)
 swap_teams_btn=Button(swap_teams_tab, text="Swap teams", command=lambda: swap_btn_action())
 save_changes_btn=Button(swap_teams_tab, text="Save changes", command=lambda: save_btn_action())
 
 #CSV tab
 
-#wip_lbl=Label(csv_tab, text="Still working on this section, soon there will be something to test")
 csv_team_cmb = ttk.Combobox(csv_tab, state="readonly", value=csv_team_list, width=30)
 csv_team_cmb.current(0)
 extra_players_check = IntVar()
 extra_players_check.set(1)
 extra_players = Checkbutton(csv_tab, text="Include Unused and Edited players", variable=extra_players_check)
+extra_stats_check = IntVar()
+extra_stats_check.set(0)
+extra_stats_check_btn = Checkbutton(csv_tab, text="Include extra/unknow stats (only for testing)", variable=extra_stats_check)
 create_csv_btn = Button(csv_tab, text="Create CSV", command=lambda: export_all_to_csv())
 import_csv_btn = Button(csv_tab, text="Import CSV", command=lambda: import_all_from_csv())
 
-#extra tab
+#Extra tab
 
-decrypt_of_btn=Button(extra_tab, text="Decrypt", command=lambda: decrypt_btn_action())
-encrypt_of_btn=Button(extra_tab, text="Encrypt", command=lambda: encrypt_btn_action())
 stat_test_entry = Entry (extra_tab) 
 test_print_btn=Button(extra_tab, text="Print stat test!", command=lambda: print(all_data[int(stat_test_entry.get())-1]))
+crypt_lbl=Label(extra_tab, text="Option File cryptology", font = "bold")
+decrypt_of_btn=Button(extra_tab, text="Decrypt", command=lambda: decrypt_btn_action())
+encrypt_of_btn=Button(extra_tab, text="Encrypt", command=lambda: encrypt_btn_action())
+teamform_lbl=Label(extra_tab, text="Formations options", font = "bold")
+teamform_cmb = ttk.Combobox(extra_tab, state="readonly", value=teams_list, width=30)
+teamform_cmb.current(0)
+exp_formation_btn = Button(extra_tab, text="Export team\nformation", command=lambda: export_formation_btn_action())
+imp_formation_btn = Button(extra_tab, text="Import team\nformation", command=lambda: import_formation_btn_action())
+
 
 
 #Swap team tab placing
@@ -272,6 +316,7 @@ team_a_lbl.place(x=200, y=60)
 team_b_lbl.place(x=420, y=60)
 team_a_cmb.place(x=200, y=100)
 team_b_cmb.place(x=420, y=100)
+swap_kits_check_btn.place(x=460, y=160)
 swap_teams_btn.place(x=380, y=160)
 save_changes_btn.place(x=376, y=200)
 copyright_lbl.place(x=0, y=570)
@@ -279,17 +324,23 @@ thanks_lbl.place(x=480, y=560)
 
 #CSV tab placing
 
-#wip_lbl.place(x=280, y=160)
-create_csv_btn.place(x=300, y=180)
-import_csv_btn.place(x=380, y=180)
 csv_team_cmb.place(x=280, y=120)
 extra_players.place(x=280, y=150)
+extra_stats_check_btn.place(x=280, y=170)
+create_csv_btn.place(x=300, y=200)
+import_csv_btn.place(x=380, y=200)
 # Extra tab placing
 
-decrypt_of_btn.place(x=240, y=160)
-encrypt_of_btn.place(x=320, y=160)
 #stat_test_entry.place(x=200, y=70)
 #test_print_btn.place(x=200, y=100)
+teamform_lbl.place(x=280, y=70)
+teamform_cmb.place(x=280, y=120)
+exp_formation_btn.place(x=300, y=150)
+imp_formation_btn.place(x=380, y=150)
+crypt_lbl.place(x=280,y=220)
+decrypt_of_btn.place(x=300, y=280)
+encrypt_of_btn.place(x=380, y=280)
+
 
 #Placing tabs and container in the root
 
