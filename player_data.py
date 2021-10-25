@@ -626,8 +626,9 @@ def get_stats(player_id, of, rare_stats_flag):
             player_club=of.clubs[i].name
             break
     ml_united_squad = get_players_ml(of)
-    if player in ml_united_squad:
+    if player_id in ml_united_squad:
         player_club = "ML United"
+
 
     player_national_team = "Not Registered"
     for i in range(0,64):
