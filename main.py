@@ -18,6 +18,11 @@ from import_csv import load_csv
 from of_crypt import of_encrypter, of_decrypter
 from teams import get_players_nations, get_players_clubs, get_formation, get_formation_generic, set_formation, set_formation_generic
 
+def report_callback_exception(self, exc, val, tb):
+    messagebox.showerror("Error", message=str(val))
+
+Tk.report_callback_exception = report_callback_exception
+
 def export_formation_btn_action():
     try:
         root.temp_file = filedialog.asksaveasfile(initialdir=".",title="Save formation", mode='wb', filetypes=(("Bin files","*.bin"),("All files", "*")), defaultextension=".bin")
