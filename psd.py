@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-import urllib, os, json, time, urllib.request, subprocess, datetime
+import urllib, urllib.request, subprocess
 from COFPES_OF_Editor_5.editor.utils.common_functions import resource_path
 from player_data import set_value, set_name, set_shirt_name
 import csv
@@ -81,7 +81,7 @@ def name_normalization(name):
         if len(name)>16:
             name=apellido
             if len(name)>16:
-              name=apellido[:15]
+              name=apellido[:16]
     
     return name
 

@@ -1,23 +1,20 @@
-import time
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 from tkinter import filedialog
-import sys
-import os
 import traceback
 
 from COFPES_OF_Editor_5.editor.option_file import OptionFile
-from COFPES_OF_Editor_5.editor.utils.common_functions import bytes_to_int, zero_fill_right_shift, to_int, to_byte, resource_path
+from COFPES_OF_Editor_5.editor.utils.common_functions import resource_path
 
 from getnames import get_of_names
 from swap_teams import swap_teams_data, swap_nations_data
 from swap_teams import encrypt_and_save
-from player_data import get_stats, set_value, get_value
+from player_data import get_stats
 from export_csv import write_csv
 from import_csv import load_csv
 from of_crypt import of_encrypter, of_decrypter
-from teams import get_players_nations, get_players_clubs, get_formation, get_formation_generic, set_formation, set_formation_generic
+from teams import get_players_nations, get_players_clubs, get_formation_generic, set_formation_generic
 
 def export_formation_btn_action():
     try:
@@ -176,7 +173,7 @@ if __name__ == "__main__":
     root.geometry('%dx%d+%d+%d' % (w, h, x, y))
     #Once it start it will ask to select the option file
     root.iconbitmap(default=resource_path("pes_indie.ico"))
-#    root.report_callback_exception = report_callback_exception
+    root.report_callback_exception = report_callback_exception
     root.filename=""
     #temp_file=""
     root.filename = filedialog.askopenfilename(initialdir=".",title="Select your option file", filetypes=(("KONAMI-WIN32PES5OPT","KONAMI-WIN32PES5OPT"),("KONAMI-WIN32WE9UOPT","KONAMI-WIN32WE9UOPT"),("KONAMI-WIN32WE9KOPT","KONAMI-WIN32WE9KOPT")))
