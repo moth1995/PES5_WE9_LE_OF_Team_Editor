@@ -1,12 +1,15 @@
 import csv
+from tkinter import messagebox
 from player_data import set_value, set_name, set_shirt_name
+from psd import import_stats_from_psd
 
 def load_csv(of, file):
     try:
         with open(file, 'r', encoding='utf-8') as csvf:
             # list to store the names of columns
             csv_reader = csv.reader(csvf, delimiter = ',')
-            list_of_column_names = [] 
+            list_of_column_names = []
+            csv_psd_link = ""
           
             # loop to iterate thorugh the rows of csv 
             for row in csv_reader: 
@@ -20,7 +23,11 @@ def load_csv(of, file):
             #print(list_of_column_names)
             if 'ID' in list_of_column_names:
                 for row in csv_reader: 
-                    player_id = int(row[list_of_column_names.index('ID')])
+                    
+                    player_id_str = (row[list_of_column_names.index('ID')])
+                    print(player_id_str)
+                    if player_id_str == "": continue
+                    else: player_id = int(player_id_str)
                     
                     # Basic settings
 
@@ -28,92 +35,130 @@ def load_csv(of, file):
                         csv_name=(row[list_of_column_names.index('NAME')])
                         # Here we limit the stat to already know konami range
                         #print(player_id, csv_name)
-                        set_name(of, player_id, csv_name)
+                        if csv_name !="":
+                            set_name(of, player_id, csv_name)
                         
                     if 'SHIRT_NAME' in list_of_column_names:
                         csv_shirt_name=(row[list_of_column_names.index('SHIRT_NAME')])
                         # Here we limit the stat to already know konami range
                         #print(player_id, csv_shirt_name)
-                        set_shirt_name(of, player_id, csv_shirt_name)
+                        if csv_shirt_name !="":
+                            set_shirt_name(of, player_id, csv_shirt_name)
 
                     if 'CALLNAME ID' in list_of_column_names:
-                        csv_callName=int(row[list_of_column_names.index('CALLNAME ID')])
+                        csv_callName=(row[list_of_column_names.index('CALLNAME ID')])
                         # Here we limit the stat to already know konami range
                         #print(player_id, csv_callName)
-                        set_value(of, player_id, 1, 0, 65535, csv_callName)
+                        if csv_callName !="":
+                            try:
+                                set_value(of, player_id, 1, 0, 65535, int(csv_callName))
+                            except (ValueError, TypeError):
+                                messagebox.showerror(f"ERROR", "error on player id {player_id} with callname, must be an integer not string")
                         
                     if 'NATIONALITY' in list_of_column_names:
                         csv_nation=row[list_of_column_names.index('NATIONALITY')]
-                        if (csv_nation) in nationalities:
-                            csv_nation = nationalities.index(csv_nation)
-                        else:
-                            csv_nation = nationalities.index("Free Nationality")
-                        #print(player_id, csv_nation)
-                        set_value(of, player_id, 63, 2, 127, csv_nation)
+                        if csv_nation !="":
+                            if (csv_nation) in nationalities:
+                                csv_nation = nationalities.index(csv_nation)
+                            else:
+                                csv_nation = nationalities.index("Free Nationality")
+                            #print(player_id, csv_nation)
+                            set_value(of, player_id, 63, 2, 127, csv_nation)
                         
                     if 'AGE' in list_of_column_names:
-                        csv_age=int(row[list_of_column_names.index('AGE')])-15
+                        csv_age=(row[list_of_column_names.index('AGE')])
                         # Here we limit the stat to already know konami range
                         #print(player_id, csv_age)
-                        set_value(of, player_id, 62, 5, 31, csv_age)
+                        if csv_age !="":
+                            try:
+                                set_value(of, player_id, 62, 5, 31, int(csv_age)-15)
+                            except (ValueError, TypeError):
+                                messagebox.showerror(f"ERROR", "error on player id {player_id} with age, must be an integer not string")
                         
                     if 'STRONG FOOT' in list_of_column_names:
                         csv_foot=(row[list_of_column_names.index('STRONG FOOT')])
                         # Here we limit the stat to already know konami range
-                        if csv_foot=="R":
-                            csv_foot=0
-                        else:
-                            csv_foot=1
-                        #print(player_id, csv_foot)
-                        set_value(of, player_id, 5, 0, 1, csv_foot)
+                        if csv_foot !="":
+                            if csv_foot=="R":
+                                csv_foot=0
+                            else:
+                                csv_foot=1
+                            #print(player_id, csv_foot)
+                            set_value(of, player_id, 5, 0, 1, csv_foot)
 
                     if 'INJURY TOLERANCE' in list_of_column_names:
                         csv_injury=(row[list_of_column_names.index('INJURY TOLERANCE')])
-                        if csv_injury == "A":
-                            csv_injury = 2
-                        elif csv_injury == "B":
-                            csv_injury = 1
-                        else:
-                            csv_injury = 0
-                        # Here we limit the stat to already know konami range
-                        #print(player_id, csv_injury)
-                        set_value(of, player_id, 35, 3, 3, csv_injury)
+                        if csv_injury !="":
+                            if csv_injury == "A":
+                                csv_injury = 2
+                            elif csv_injury == "B":
+                                csv_injury = 1
+                            else:
+                                csv_injury = 0
+                            # Here we limit the stat to already know konami range
+                            #print(player_id, csv_injury)
+                            set_value(of, player_id, 35, 3, 3, csv_injury)
                         
                     if 'DRIBBLE STYLE' in list_of_column_names:
-                        csv_dribSty=int(row[list_of_column_names.index('DRIBBLE STYLE')]) - 1
-                        # Here we limit the stat to already know konami range
-                        #print(player_id, csv_dribSty)
-                        set_value(of, player_id, 6, 0, 3, csv_dribSty)
-                        
+                        csv_dribSty=(row[list_of_column_names.index('DRIBBLE STYLE')])
+                        if (csv_dribSty !=""):
+                            # Here we limit the stat to already know konami range
+                            #print(player_id, csv_dribSty)
+                            try:
+                                set_value(of, player_id, 6, 0, 3, int(csv_dribSty)-1)
+                            except (ValueError, TypeError):
+                                messagebox.showerror(f"ERROR", "error on player id {player_id} with DRIBBLE STYLE, must be an integer not string")
+
                     if 'FREE KICK STYLE' in list_of_column_names:
-                        csv_freekick=int(row[list_of_column_names.index('FREE KICK STYLE')]) - 1
+                        csv_freekick=(row[list_of_column_names.index('FREE KICK STYLE')])
                         # Here we limit the stat to already know konami range
                         #print(player_id, csv_freekick)
-                        set_value(of, player_id, 5, 1, 15, csv_freekick)
+                        if csv_freekick !="":
+                            try:
+                                set_value(of, player_id, 5, 1, 15, int(csv_freekick)-1)
+                            except (ValueError, TypeError):
+                                messagebox.showerror(f"ERROR", "error on player id {player_id} with FREE KICK STYLE, must be an integer not string")
                         
                     if 'PK STYLE' in list_of_column_names:
-                        csv_pkStyle=int(row[list_of_column_names.index('PK STYLE')]) - 1
+                        csv_pkStyle=(row[list_of_column_names.index('PK STYLE')])
                         # Here we limit the stat to already know konami range
                         #print(player_id, csv_pkStyle)
-                        set_value(of, player_id, 5, 5, 7, csv_pkStyle)
+                        if csv_pkStyle !="":
+                            try:
+                                set_value(of, player_id, 5, 5, 7, int(csv_pkStyle)-1)
+                            except (ValueError, TypeError):
+                                messagebox.showerror(f"ERROR", "error on player id {player_id} with PK STYLE, must be an integer not string")
                         
                     if 'DROP KICK STYLE' in list_of_column_names:
-                        csv_dkSty=int(row[list_of_column_names.index('DROP KICK STYLE')]) - 1
-                        # Here we limit the stat to already know konami range
-                        #print(player_id, csv_dkSty)
-                        set_value(of, player_id, 6, 2, 3, csv_dkSty)
+                        csv_dkSty=(row[list_of_column_names.index('DROP KICK STYLE')])
+                        if csv_dkSty !="":
+                            # Here we limit the stat to already know konami range
+                            #print(player_id, csv_dkSty)
+                            try:
+                                set_value(of, player_id, 6, 2, 3, int(csv_dkSty)-1)
+                            except (ValueError, TypeError):
+                                messagebox.showerror(f"ERROR", "error on player id {player_id} with DROP KICK STYLE, must be an integer not string")
 
                     if 'GOAL CELEBRATION 1' in list_of_column_names:
-                        csv_goal_c1=int(row[list_of_column_names.index('GOAL CELEBRATION 1')])
+                        csv_goal_c1=(row[list_of_column_names.index('GOAL CELEBRATION 1')])
                         # Here we limit the stat to already know konami range
                         #print(player_id, csv_goal_c1)
-                        set_value(of, player_id, 85-48, 1, 127, csv_goal_c1)
+                        if csv_goal_c1 !="":
+                            try:
+                                set_value(of, player_id, 85-48, 1, 127, int(csv_goal_c1))
+                            except (ValueError, TypeError):
+                                messagebox.showerror(f"ERROR", "error on player id {player_id} with GOAL CELEBRATION 1, must be an integer not string")
 
                     if 'GOAL CELEBRATION 2' in list_of_column_names:
-                        csv_goal_c2=int(row[list_of_column_names.index('GOAL CELEBRATION 2')])
+                        csv_goal_c2=(row[list_of_column_names.index('GOAL CELEBRATION 2')])
                         # Here we limit the stat to already know konami range
                         #print(player_id, csv_goal_c2)
-                        set_value(of, player_id, 86-48, 0, 127, csv_goal_c2)
+                        if csv_goal_c2 !="":
+                            try:
+                                set_value(of, player_id, 86-48, 0, 127, int(csv_goal_c2))
+                            except (ValueError, TypeError):
+                                messagebox.showerror(f"ERROR", "error on player id {player_id} with GOAL CELEBRATION 2, must be an integer not string")
+
                         
                     #if 'GROWTH TYPE' in list_of_column_names:
                         #csv_growth_type=int(row[list_of_column_names.index('GROWTH TYPE')])
@@ -373,7 +418,6 @@ def load_csv(of, file):
                         #    csv_dribSpe=99
                         #print(player_id, csv_dribSpe)
                         set_value(of, player_id, 15, 5, 127, csv_dribSpe)
-                        #hasta aca llegaste wacho
                         
                     if 'SHORT PASS ACCURACY' in list_of_column_names:
                         csv_sPassAcc=int(row[list_of_column_names.index('SHORT PASS ACCURACY')])
@@ -1325,7 +1369,18 @@ def load_csv(of, file):
                         #print(player_id, csv_statEdited)
                         set_value(of, player_id, 39, 7, 1, csv_statEdited)
 
-
+                    if 'PSD' in list_of_column_names:
+                        csv_psd_link=(row[list_of_column_names.index('PSD')])
+                        # Here we limit the stat to already know konami range
+                        #if csv_statEdited<0:
+                        #    csv_statEdited=0
+                        #elif csv_statEdited>1:
+                        #    csv_statEdited=1
+                        if csv_psd_link !="":
+                            import_stats_from_psd(of, player_id, csv_psd_link)
+                    else:
+                        csv_psd_link = ""
+                    
                     # Here's a template in future case i need to add a new stat (which is very likely)
                     #if '' in list_of_column_names:
                         #csv_ = int(row[list_of_column_names.index('')])
@@ -1336,8 +1391,9 @@ def load_csv(of, file):
                     # first iteration itself 
                     #break
                 return True
-    except EnvironmentError as e: # parent of IOError, OSError *and* WindowsError where available
-        print (e)
+    except Exception as e: # parent of IOError, OSError *and* WindowsError where available
+        messagebox.showerror(title="Error", message=e)
+        print(e)
         return False
 
 nationalities = ["Austria", "Belgium", "Bulgaria", "Croatia", "Czech Republic", "Denmark", "England", "Finland", "France", "Germany", "Greece", 

@@ -5,9 +5,10 @@ from tkinter import ttk
 from tkinter import filedialog
 import sys
 import os
+import traceback
 
 from COFPES_OF_Editor_5.editor.option_file import OptionFile
-from COFPES_OF_Editor_5.editor.utils.common_functions import bytes_to_int, zero_fill_right_shift, to_int, to_byte
+from COFPES_OF_Editor_5.editor.utils.common_functions import bytes_to_int, zero_fill_right_shift, to_int, to_byte, resource_path
 
 from getnames import get_of_names
 from swap_teams import swap_teams_data, swap_nations_data
@@ -18,11 +19,6 @@ from import_csv import load_csv
 from of_crypt import of_encrypter, of_decrypter
 from teams import get_players_nations, get_players_clubs, get_formation, get_formation_generic, set_formation, set_formation_generic
 
-def report_callback_exception(self, exc, val, tb):
-    messagebox.showerror("Error", message=str(val))
-
-Tk.report_callback_exception = report_callback_exception
-
 def export_formation_btn_action():
     try:
         root.temp_file = filedialog.asksaveasfile(initialdir=".",title="Save formation", mode='wb', filetypes=(("Bin files","*.bin"),("All files", "*")), defaultextension=".bin")
@@ -31,11 +27,9 @@ def export_formation_btn_action():
         with open(root.temp_file.name, "wb") as binary_file:
             binary_file.write(get_formation_generic(of, teamform_cmb.current()))
         messagebox.showinfo(title=appname,message="Formation file created!")
-    except OSError as err:
+    except Exception as err:
         #print("OS error: {0}".format(err))
         messagebox.showerror(title=appname,message="OS error: {0}".format(err))
-    except EnvironmentError: # parent of IOError, OSError *and* WindowsError where available
-        messagebox.showerror(title=appname,message="Error while creating file, please run as admin\nError: {0}".format(err))
 
 def import_formation_btn_action():
     try:
@@ -46,11 +40,9 @@ def import_formation_btn_action():
             set_formation_generic(of, teamform_cmb.current(), bytearray(binary_file.read()))
         messagebox.showinfo(title=appname,message="Formation imported!")
         save_btn_action()
-    except OSError as err:
+    except Exception as err:
         #print("OS error: {0}".format(err))
         messagebox.showerror(title=appname,message="OS error: {0}".format(err))
-    except EnvironmentError as err: # parent of IOError, OSError *and* WindowsError where available
-        messagebox.showerror(title=appname,message="Error while reading the file, please run as admin\nError: {0}".format(err))
 
 
 
@@ -163,200 +155,207 @@ def save_btn_action():
     else:
         messagebox.showerror(title=appname,message="Error while saving, please run as admin")
 
-appname='PES5/WE9/LE OF Team Editor'
-root = Tk()
-root.title(appname)
-w = 800 # width for the Tk root
-h = 600 # height for the Tk root
-# get screen width and height
-ws = root.winfo_screenwidth() # width of the screen
-hs = root.winfo_screenheight() # height of the screen
-# calculate x and y coordinates for the Tk root window
-x = (ws/2) - (w/2)
-y = (hs/2) - (h/2)
-# set the dimensions of the screen 
-# and where it is placed
-root.geometry('%dx%d+%d+%d' % (w, h, x, y))
-#Once it start it will ask to select the option file
-root.filename=""
-#temp_file=""
-root.filename = filedialog.askopenfilename(initialdir=".",title="Select your option file", filetypes=(("KONAMI-WIN32PES5OPT","KONAMI-WIN32PES5OPT"),("KONAMI-WIN32WE9UOPT","KONAMI-WIN32WE9UOPT"),("KONAMI-WIN32WE9KOPT","KONAMI-WIN32WE9KOPT")))
-#root.filename = "KONAMI-WIN32PES5OPT"
-#root.filename = r"C:\Users\marco\Documents\KONAMI\Pro Evolution Soccer 5\save\folder1\KONAMI-WIN32PES5OPT"
-if root.filename!="":
-    of = OptionFile(root.filename)
-    '''
-    # No need anymore to create a temporary file, we just use the bytearray
-    temp_file = "temp.bin"
-    with open(temp_file, "wb") as binary_file:
-        binary_file.write(of.data)
-        #print("Temporary file created")
-    '''
-else:
-    root.destroy()
+def report_callback_exception(*args):
+    err = traceback.format_exception(*args)
+    messagebox.showerror(appname + " Error Message", " ".join(err))
+
+if __name__ == "__main__":
+    appname='PES5/WE9/LE OF Team Editor'
+    root = Tk()
+    root.title(appname)
+    w = 800 # width for the Tk root
+    h = 600 # height for the Tk root
+    # get screen width and height
+    ws = root.winfo_screenwidth() # width of the screen
+    hs = root.winfo_screenheight() # height of the screen
+    # calculate x and y coordinates for the Tk root window
+    x = (ws/2) - (w/2)
+    y = (hs/2) - (h/2)
+    # set the dimensions of the screen 
+    # and where it is placed
+    root.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    #Once it start it will ask to select the option file
+    root.iconbitmap(default=resource_path("pes_indie.ico"))
+#    root.report_callback_exception = report_callback_exception
+    root.filename=""
+    #temp_file=""
+    root.filename = filedialog.askopenfilename(initialdir=".",title="Select your option file", filetypes=(("KONAMI-WIN32PES5OPT","KONAMI-WIN32PES5OPT"),("KONAMI-WIN32WE9UOPT","KONAMI-WIN32WE9UOPT"),("KONAMI-WIN32WE9KOPT","KONAMI-WIN32WE9KOPT")))
+    #root.filename = "KONAMI-WIN32PES5OPT"
+    #root.filename = r"C:\Users\marco\Documents\KONAMI\Pro Evolution Soccer 5\save\folder1\KONAMI-WIN32PES5OPT"
+    if root.filename!="":
+        of = OptionFile(root.filename)
+        '''
+        # No need anymore to create a temporary file, we just use the bytearray
+        temp_file = "temp.bin"
+        with open(temp_file, "wb") as binary_file:
+            binary_file.write(of.data)
+            #print("Temporary file created")
+        '''
+
+        # CODE BELOW WAS DONE ONLY FOR DEBUGGING, IF YOU WANT TO FIND THE SHIFT AND MASK FOR A STAT
+        # YOU JUST NEED TO PASS PLAYER IDS THAT YOU WILL USE TO COMPARE AND WRITE THE POSSIBLE VALUES IN THE LIST CALLED TEST
+
+        '''
+        players_ids=[*range(1, 5000, 1)]+[*range(32768, 32952, 1)]
+        all_data=[]
+        for player_id in players_ids:
+            all_data.append(int(get_value(of,player_id,12, 6, 1, "Head overall position")))
 
 
-
-# CODE BELOW WAS DONE ONLY FOR DEBUGGING, IF YOU WANT TO FIND THE SHIFT AND MASK FOR A STAT
-# YOU JUST NEED TO PASS PLAYER IDS THAT YOU WILL USE TO COMPARE AND WRITE THE POSSIBLE VALUES IN THE LIST CALLED TEST
-
-'''
-players_ids=[*range(1, 5000, 1)]+[*range(32768, 32952, 1)]
-all_data=[]
-for player_id in players_ids:
-    all_data.append(int(get_value(of,player_id,12, 6, 1, "Head overall position")))
-
-
-#validate=[*range(0, 8, 1)]#+[*range(0, 6, 1)]
-#validate = [0,1,2,3,4,5,6]
-#validate = [6,5,4,3,2,1,0]
-validate = [0, 0, 1, 0, 0, 1, 1, 1]
-#validate = [63,62,0]
-print(validate)
-test=[]
-
-for shift in range(0,65536):
-    #print (f"the mask is {mask}")
-    for mask in range(0,65536):
-        #if mask==2047:
-        #    print("llegamos al punto conocido")
-        #mask=12
-        offset = 12
-        stat_name = ""
-        test.append((get_value(of,1,offset, shift, mask, stat_name) ))
-        test.append((get_value(of,2,offset, shift, mask, stat_name) ))
-        test.append((get_value(of,3,offset, shift, mask, stat_name) ))
-        
-        test.append((get_value(of,4,offset, shift, mask, stat_name) ))
-        
-        test.append((get_value(of,5,offset, shift, mask, stat_name) ))
-        test.append((get_value(of,6,offset,shift, mask, stat_name) ))
-        
-        
-
-        test.append((get_value(of,7,offset, shift, mask, stat_name) ))
-        test.append((get_value(of,8,offset, shift, mask, stat_name) ))
-        
-        #test.append((get_value(of,690,offset, shift, mask, stat_name) ))
-        #test.append((get_value(of,4473,offset, shift, mask, stat_name) ))
-        #test.append((get_value(of,1485,offset, shift, mask, stat_name) ))
-        
-        #test.append((get_value(of,4521,offset, shift, mask, stat_name) ))
-        #test.append((get_value(of,1229,offset, shift, mask, stat_name) ))
-        #test.append((get_value(of,690,offset, shift, mask, stat_name) ))
-        #test.append((get_value(of,4029,offset, shift, mask, stat_name) ))
-
-        if test == validate:
-            print(shift, mask)
+        #validate=[*range(0, 8, 1)]#+[*range(0, 6, 1)]
+        #validate = [0,1,2,3,4,5,6]
+        #validate = [6,5,4,3,2,1,0]
+        validate = [0, 0, 1, 0, 0, 1, 1, 1]
+        #validate = [63,62,0]
+        print(validate)
         test=[]
-'''
+
+        for shift in range(0,65536):
+            #print (f"the mask is {mask}")
+            for mask in range(0,65536):
+                #if mask==2047:
+                #    print("llegamos al punto conocido")
+                #mask=12
+                offset = 12
+                stat_name = ""
+                test.append((get_value(of,1,offset, shift, mask, stat_name) ))
+                test.append((get_value(of,2,offset, shift, mask, stat_name) ))
+                test.append((get_value(of,3,offset, shift, mask, stat_name) ))
+                
+                test.append((get_value(of,4,offset, shift, mask, stat_name) ))
+                
+                test.append((get_value(of,5,offset, shift, mask, stat_name) ))
+                test.append((get_value(of,6,offset,shift, mask, stat_name) ))
+                
+                
+
+                test.append((get_value(of,7,offset, shift, mask, stat_name) ))
+                test.append((get_value(of,8,offset, shift, mask, stat_name) ))
+                
+                #test.append((get_value(of,690,offset, shift, mask, stat_name) ))
+                #test.append((get_value(of,4473,offset, shift, mask, stat_name) ))
+                #test.append((get_value(of,1485,offset, shift, mask, stat_name) ))
+                
+                #test.append((get_value(of,4521,offset, shift, mask, stat_name) ))
+                #test.append((get_value(of,1229,offset, shift, mask, stat_name) ))
+                #test.append((get_value(of,690,offset, shift, mask, stat_name) ))
+                #test.append((get_value(of,4029,offset, shift, mask, stat_name) ))
+
+                if test == validate:
+                    print(shift, mask)
+                test=[]
+        '''
 
 
-tabs_container=ttk.Notebook(root)
-swap_teams_tab=Frame(tabs_container, width=w, height=h)
-csv_tab=Frame(tabs_container, width=w, height=h)
-extra_tab=Frame(tabs_container, width=w, height=h)
-copyright_lbl=Label(root, text="By PES Indie Team")
-thanks_lbl=Label(root, text="Thanks to PeterC10 for python de/encrypt code for OF\nand also mattmid who help me with many player attributes")
+        tabs_container=ttk.Notebook(root)
+        swap_teams_tab=Frame(tabs_container, width=w, height=h)
+        csv_tab=Frame(tabs_container, width=w, height=h)
+        extra_tab=Frame(tabs_container, width=w, height=h)
+        copyright_lbl=Label(root, text="By PES Indie Team")
+        thanks_lbl=Label(root, text="Thanks to PeterC10 for python de/encrypt code for OF\nand also mattmid who help me with many player attributes")
 
 
-#Swap teams tab 
+        #Swap teams tab 
 
-teams_list=[
-"Austria", "Belgium", "Bulgaria", "Croatia", "Czech Republic", "Denmark", "England", "Finland", "France", "Germany", "Greece", "Hungary", "Ireland", "Italy", "Latvia", 
-"Netherlands", "Northern Ireland", "Norway", "Poland", "Portugal", "Romania", "Russia", "Scotland", "Serbia and Montenegro", "Slovakia", "Slovenia", "Spain", "Sweden", 
-"Switzerland", "Turkey", "Ukraine", "Wales", "Cameroon", "Cote d'Ivoire", "Morocco", "Nigeria", "Senegal", "South Africa", "Tunisia", "Costa Rica", "Mexico", "USA", 
-"Argentina", "Brazil", "Chile", "Colombia", "Ecuador", "Paraguay", "Peru", "Uruguay", "Venezuela", "China", "Iran", "Japan", "Saudi Arabia", "South Korea", "Australia",
-"Classic Argentina", "Classic Brazil", "Classic England", "Classic France", "Classic Germany", "Classic Italy", "Classic Netherlands"
-]
-#print(len(teams_list))
-teams_list+=get_of_names(of)
-#print(len(teams_list))
-csv_team_list = ["---ALL PLAYERS---"] + teams_list
-#print(csv_team_list)
-
-
-
-team_a_lbl=Label(swap_teams_tab, text="Team A")
-team_b_lbl=Label(swap_teams_tab, text="Team B")
-team_a_cmb=ttk.Combobox(swap_teams_tab, state="readonly", value=teams_list, width=30)
-team_b_cmb=ttk.Combobox(swap_teams_tab, state="readonly", value=teams_list, width=30)
-swap_kits_check = IntVar()
-swap_kits_check.set(0)
-swap_kits_check_btn = Checkbutton(swap_teams_tab, text="Swap OF kits", variable=swap_kits_check)
-swap_teams_btn=Button(swap_teams_tab, text="Swap teams", command=lambda: swap_btn_action())
-save_changes_btn=Button(swap_teams_tab, text="Save changes", command=lambda: save_btn_action())
-
-#CSV tab
-
-csv_team_cmb = ttk.Combobox(csv_tab, state="readonly", value=csv_team_list, width=30)
-csv_team_cmb.current(0)
-extra_players_check = IntVar()
-extra_players_check.set(1)
-extra_players = Checkbutton(csv_tab, text="Include Unused and Edited players", variable=extra_players_check)
-extra_stats_check = IntVar()
-extra_stats_check.set(0)
-extra_stats_check_btn = Checkbutton(csv_tab, text="Include extra/unknow stats (only for testing)", variable=extra_stats_check)
-create_csv_btn = Button(csv_tab, text="Create CSV", command=lambda: export_all_to_csv())
-import_csv_btn = Button(csv_tab, text="Import CSV", command=lambda: import_all_from_csv())
-
-#Extra tab
-
-stat_test_entry = Entry (extra_tab) 
-test_print_btn=Button(extra_tab, text="Print stat test!", command=lambda: print(all_data[int(stat_test_entry.get())-1]))
-crypt_lbl=Label(extra_tab, text="Option File cryptology", font = "bold")
-decrypt_of_btn=Button(extra_tab, text="Decrypt", command=lambda: decrypt_btn_action())
-encrypt_of_btn=Button(extra_tab, text="Encrypt", command=lambda: encrypt_btn_action())
-teamform_lbl=Label(extra_tab, text="Formations options", font = "bold")
-teamform_cmb = ttk.Combobox(extra_tab, state="readonly", value=teams_list, width=30)
-teamform_cmb.current(0)
-exp_formation_btn = Button(extra_tab, text="Export team\nformation", command=lambda: export_formation_btn_action())
-imp_formation_btn = Button(extra_tab, text="Import team\nformation", command=lambda: import_formation_btn_action())
+        teams_list=[
+        "Austria", "Belgium", "Bulgaria", "Croatia", "Czech Republic", "Denmark", "England", "Finland", "France", "Germany", "Greece", "Hungary", "Ireland", "Italy", "Latvia", 
+        "Netherlands", "Northern Ireland", "Norway", "Poland", "Portugal", "Romania", "Russia", "Scotland", "Serbia and Montenegro", "Slovakia", "Slovenia", "Spain", "Sweden", 
+        "Switzerland", "Turkey", "Ukraine", "Wales", "Cameroon", "Cote d'Ivoire", "Morocco", "Nigeria", "Senegal", "South Africa", "Tunisia", "Costa Rica", "Mexico", "USA", 
+        "Argentina", "Brazil", "Chile", "Colombia", "Ecuador", "Paraguay", "Peru", "Uruguay", "Venezuela", "China", "Iran", "Japan", "Saudi Arabia", "South Korea", "Australia",
+        "Classic Argentina", "Classic Brazil", "Classic England", "Classic France", "Classic Germany", "Classic Italy", "Classic Netherlands"
+        ]
+        #print(len(teams_list))
+        teams_list+=get_of_names(of)
+        #print(len(teams_list))
+        csv_team_list = ["---ALL PLAYERS---"] + teams_list
+        #print(csv_team_list)
 
 
 
-#Swap team tab placing
+        team_a_lbl=Label(swap_teams_tab, text="Team A")
+        team_b_lbl=Label(swap_teams_tab, text="Team B")
+        team_a_cmb=ttk.Combobox(swap_teams_tab, state="readonly", value=teams_list, width=30)
+        team_b_cmb=ttk.Combobox(swap_teams_tab, state="readonly", value=teams_list, width=30)
+        swap_kits_check = IntVar()
+        swap_kits_check.set(0)
+        swap_kits_check_btn = Checkbutton(swap_teams_tab, text="Swap OF kits", variable=swap_kits_check)
+        swap_teams_btn=Button(swap_teams_tab, text="Swap teams", command=lambda: swap_btn_action())
+        save_changes_btn=Button(swap_teams_tab, text="Save changes", command=lambda: save_btn_action())
 
-team_a_lbl.place(x=200, y=60)
-team_b_lbl.place(x=420, y=60)
-team_a_cmb.place(x=200, y=100)
-team_b_cmb.place(x=420, y=100)
-swap_kits_check_btn.place(x=460, y=160)
-swap_teams_btn.place(x=380, y=160)
-save_changes_btn.place(x=376, y=200)
-copyright_lbl.place(x=0, y=570)
-thanks_lbl.place(x=480, y=560)
+        #CSV tab
 
-#CSV tab placing
+        csv_team_cmb = ttk.Combobox(csv_tab, state="readonly", value=csv_team_list, width=30)
+        csv_team_cmb.current(0)
+        extra_players_check = IntVar()
+        extra_players_check.set(1)
+        extra_players = Checkbutton(csv_tab, text="Include Unused and Edited players", variable=extra_players_check)
+        extra_stats_check = IntVar()
+        extra_stats_check.set(0)
+        extra_stats_check_btn = Checkbutton(csv_tab, text="Include extra/unknow stats (only for testing)", variable=extra_stats_check)
+        create_csv_btn = Button(csv_tab, text="Create CSV", command=lambda: export_all_to_csv())
+        import_csv_btn = Button(csv_tab, text="Import CSV", command=lambda: import_all_from_csv())
 
-csv_team_cmb.place(x=280, y=120)
-extra_players.place(x=280, y=150)
-extra_stats_check_btn.place(x=280, y=170)
-create_csv_btn.place(x=300, y=200)
-import_csv_btn.place(x=380, y=200)
-# Extra tab placing
+        #Extra tab
 
-#stat_test_entry.place(x=200, y=70)
-#test_print_btn.place(x=200, y=100)
-teamform_lbl.place(x=280, y=70)
-teamform_cmb.place(x=280, y=120)
-exp_formation_btn.place(x=300, y=150)
-imp_formation_btn.place(x=380, y=150)
-crypt_lbl.place(x=280,y=220)
-decrypt_of_btn.place(x=300, y=280)
-encrypt_of_btn.place(x=380, y=280)
+        stat_test_entry = Entry (extra_tab) 
+        #test_print_btn=Button(extra_tab, text="Print stat test!", command=lambda: print(all_data[int(stat_test_entry.get())-1]))
+        test_print_btn=Button(extra_tab, text="Print stat test!", command=lambda: None)
+        crypt_lbl=Label(extra_tab, text="Option File cryptology", font = "bold")
+        decrypt_of_btn=Button(extra_tab, text="Decrypt", command=lambda: decrypt_btn_action())
+        encrypt_of_btn=Button(extra_tab, text="Encrypt", command=lambda: encrypt_btn_action())
+        teamform_lbl=Label(extra_tab, text="Formations options", font = "bold")
+        teamform_cmb = ttk.Combobox(extra_tab, state="readonly", value=teams_list, width=30)
+        teamform_cmb.current(0)
+        exp_formation_btn = Button(extra_tab, text="Export team\nformation", command=lambda: export_formation_btn_action())
+        imp_formation_btn = Button(extra_tab, text="Import team\nformation", command=lambda: import_formation_btn_action())
 
 
-#Placing tabs and container in the root
 
-tabs_container.pack()
-swap_teams_tab.pack(fill="both", expand=1)
-csv_tab.pack(fill="both", expand=1)
-extra_tab.pack(fill="both", expand=1)
+        #Swap team tab placing
 
-tabs_container.add(swap_teams_tab, text="Swap Teams")
-tabs_container.add(csv_tab, text="Export/Import CSV")
-tabs_container.add(extra_tab, text="Extra")
+        team_a_lbl.place(x=200, y=60)
+        team_b_lbl.place(x=420, y=60)
+        team_a_cmb.place(x=200, y=100)
+        team_b_cmb.place(x=420, y=100)
+        swap_kits_check_btn.place(x=460, y=160)
+        swap_teams_btn.place(x=380, y=160)
+        save_changes_btn.place(x=376, y=200)
+        copyright_lbl.place(x=0, y=570)
+        thanks_lbl.place(x=480, y=560)
 
-root.resizable(False, False)
-root.mainloop() 
+        #CSV tab placing
+
+        csv_team_cmb.place(x=280, y=120)
+        extra_players.place(x=280, y=150)
+        extra_stats_check_btn.place(x=280, y=170)
+        create_csv_btn.place(x=300, y=200)
+        import_csv_btn.place(x=380, y=200)
+        # Extra tab placing
+
+        #stat_test_entry.place(x=200, y=70)
+        #test_print_btn.place(x=200, y=100)
+        teamform_lbl.place(x=280, y=70)
+        teamform_cmb.place(x=280, y=120)
+        exp_formation_btn.place(x=300, y=150)
+        imp_formation_btn.place(x=380, y=150)
+        crypt_lbl.place(x=280,y=220)
+        decrypt_of_btn.place(x=300, y=280)
+        encrypt_of_btn.place(x=380, y=280)
+
+
+        #Placing tabs and container in the root
+
+        tabs_container.pack()
+        swap_teams_tab.pack(fill="both", expand=1)
+        csv_tab.pack(fill="both", expand=1)
+        extra_tab.pack(fill="both", expand=1)
+
+        tabs_container.add(swap_teams_tab, text="Swap Teams")
+        tabs_container.add(csv_tab, text="Export/Import CSV")
+        tabs_container.add(extra_tab, text="Extra")
+
+        root.resizable(False, False)
+        root.mainloop() 
+    else:
+        root.destroy()
+
