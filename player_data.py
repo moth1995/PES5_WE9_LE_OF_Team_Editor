@@ -176,7 +176,7 @@ def get_stats(player_id, of, rare_stats_flag):
     player_goal_c1 = get_value(of,player_id,85-48, 1, 127, "GOAL CELEBRATION 1")
     player_goal_c2 = get_value(of,player_id,86-48, 0, 127, "GOAL CELEBRATION 2")
     # Offset for growth type is rigth, but i cant get the proper value in any elif, also this value seems to be related to salary of player
-    #player_growth_type= get_value(of,player_id,87-48,2, 3, "Growth type")
+    player_growth_type= get_value(of,player_id,87-48, 0, 0xff, "Growth type")
     
     # Position settings
     player_regPos = get_value(of, player_id, 54-48, 4, 15, "Registered position")
@@ -194,9 +194,9 @@ def get_stats(player_id, of, rare_stats_flag):
     player_cf = get_value(of, player_id, 68-48, 5, 1, "CF")
     player_favSide = get_value(of, player_id, 68-48, 6, 3, "Fav side")
     if player_favSide == 0:
-        player_favSide = "R"
-    elif player_favSide == 1:
         player_favSide = "L"
+    elif player_favSide == 1:
+        player_favSide = "R"
     else:
         player_favSide = "B"
 
@@ -601,13 +601,13 @@ def get_stats(player_id, of, rare_stats_flag):
     player_necklace_colour = get_value(of,player_id,98-48, 3, 7, "Necklace colour") + 1
     player_wistband = get_value(of,player_id,98-48, 7, 3, "wistband")
     player_wistband_colour = get_value(of,player_id,99-48, 1, 7, "wistband colour") + 1
-    player_friend_brace =  get_value(of,player_id,99-48, 3, 4, "friendship bracelate")
+    player_friend_brace =  get_value(of,player_id,99-48, 4, 3, "friendship bracelate")
     player_friend_brace_colour =  get_value(of,player_id,99-48, 6, 7, "friendship bracelate colour") + 1
     player_gloves = get_value(of,player_id,104-48, 7, 1, "Gloves")
     player_finger_band = get_value(of,player_id,109-48, 0, 3, "Finger Band")
     player_shirt = get_value(of,player_id,92-48, 7, 1, "Shirt")
     player_sleeves =  get_value(of,player_id,96-48, 6, 3, "Sleeves")
-    player_under_short =  get_value(of,player_id,100-48, 76, 1, "under short")
+    player_under_short =  get_value(of,player_id,100-48, 7, 1, "under short")
     player_under_short_colour =  get_value(of,player_id,101-48, 0, 7, "under short colour") + 1
     player_socks =  get_value(of,player_id,105-48, 0, 3, "Socks") + 1
     player_tape =  get_value(of,player_id,102-48, 4, 1, "Tape")
@@ -657,7 +657,7 @@ def get_stats(player_id, of, rare_stats_flag):
     # Player basic settings
     player_id, player_name, player_shirt_name, player_callName, player_nation, player_age, player_foot, player_injury, 
     player_dribSty, player_freekick, player_pkStyle, player_dkSty, player_goal_c1, player_goal_c2,
-    #player_growth_type,
+    player_growth_type,
     
     # Player position settings
     player_regPos, player_favSide, player_gk, player_cbwS, player_cbt, player_sb, player_dm, player_wb, player_cm, player_sm, player_om, player_wg, player_ss, player_cf,

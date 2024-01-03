@@ -20,7 +20,7 @@ def load_csv(of, file):
                 # breaking the loop after the 
                 # first iteration itself 
                 break
-            #print(list_of_column_names)
+            print(list_of_column_names)
             if 'ID' in list_of_column_names:
                 for row in csv_reader: 
                     
@@ -160,11 +160,11 @@ def load_csv(of, file):
                                 messagebox.showerror(f"ERROR", "error on player id {player_id} with GOAL CELEBRATION 2, must be an integer not string\nError type: {e}")
 
                         
-                    #if 'GROWTH TYPE' in list_of_column_names:
-                        #csv_growth_type=int(row[list_of_column_names.index('GROWTH TYPE')])
-                        # Here we limit the stat to already know konami range
+                    if 'GROWTH TYPE' in list_of_column_names:
+                        csv_growth_type=int(row[list_of_column_names.index('GROWTH TYPE')])
+                        #Here we limit the stat to already know konami range
                         #print(player_id, csv_growth_type)
-                        #set_value(of, player_id, 87-48,2, 3, csv_growth_type)
+                        set_value(of, player_id, 87-48, 0, 0xff, csv_growth_type)
 
                     # Position settings
 
@@ -1362,7 +1362,7 @@ def load_csv(of, file):
                     if 'FRIENDSHIP BRACELET' in list_of_column_names:
                         csv_friend_brace = int(row[list_of_column_names.index('FRIENDSHIP BRACELET')])
                         #print(player_id, csv_friend_brace)
-                        set_value(of, player_id, 99-48, 3, 4, csv_friend_brace)
+                        set_value(of, player_id, 99-48, 4, 3, csv_friend_brace)
 
                     if 'FRIENDSHIP BRACELET COLOUR' in list_of_column_names:
                         csv_friend_brace_colour = int(row[list_of_column_names.index('FRIENDSHIP BRACELET COLOUR')]) - 1
@@ -1392,7 +1392,7 @@ def load_csv(of, file):
                     if 'UNDER SHORT' in list_of_column_names:
                         csv_under_short = int(row[list_of_column_names.index('UNDER SHORT')])
                         #print(player_id, csv_under_short)
-                        set_value(of, player_id, 100-48, 76, 1, csv_under_short)
+                        set_value(of, player_id, 100-48, 7, 1, csv_under_short)
 
                     if 'UNDER SHORT COLOUR' in list_of_column_names:
                         csv_under_short_colour = int(row[list_of_column_names.index('UNDER SHORT COLOUR')]) - 1
@@ -1483,7 +1483,7 @@ def load_csv(of, file):
                     #break
                 return True
     except Exception as e: 
-        messagebox.showerror(title="Error", message=e)
+        #messagebox.showerror(title="Error", message=e)
         print(e)
         return False
 
