@@ -1,5 +1,5 @@
 import os
-import itertools
+import struct
 
 from enum import Enum, auto
 
@@ -105,74 +105,82 @@ class OptionFile:
         """
         Decrypt OF.
         """
-        for i in range(1, 10):
+        total_keys = len(self.of_key)
+        for i in range(1, len(self.of_block)):
             k = 0
-            a = self.of_block[i]
-            while True:
-                if a + 4 > self.of_block[i] + self.of_block_size[i]:
-                    break
+            #a = self.of_block[i]
+            # while True:
+            #     if a + 4 > self.of_block[i] + self.of_block_size[i]:
+            #         break
+            for a in range(self.of_block[i], self.of_block[i] + self.of_block_size[i], 4):
+                # c = bytes_to_int(self.data, a)
+                c = struct.unpack("<I", self.data[a: a +4])[0]
+                p = ((c - self.of_key[k]) + self.of_key[total_keys - 1]) ^ self.of_key[total_keys - 1]
 
-                c = bytes_to_int(self.data, a)
-                p = ((c - self.of_key[k]) + 0x6C371625) ^ 0x6C371625
-
-                self.data[a] = p & 0x000000FF
-                self.data[a + 1] = zero_fill_right_shift(p, 8) & 0x000000FF
-                self.data[a + 2] = zero_fill_right_shift(p, 16) & 0x000000FF
-                self.data[a + 3] = zero_fill_right_shift(p, 24) & 0x000000FF
-
+                # self.data[a] = p & 0x000000FF
+                # self.data[a + 1] = zero_fill_right_shift(p, 8) & 0x000000FF
+                # self.data[a + 2] = zero_fill_right_shift(p, 16) & 0x000000FF
+                # self.data[a + 3] = zero_fill_right_shift(p, 24) & 0x000000FF
+                self.data[a : a + 4] = struct.pack("<I",p)
+                
                 k += 1
-                if k == 367:
+                if k == total_keys:
                     k = 0
 
-                a += 4
+                #a += 4
 
     def encrypt(self):
         """
         Encrypt OF.
         """
-        for i in range(1, 10):
+        total_keys = len(self.of_key)
+        for i in range(1, len(self.of_block)):
             k = 0
-            a = self.of_block[i]
-            while True:
-                if a + 4 > self.of_block[i] + self.of_block_size[i]:
-                    break
+            #a = self.of_block[i]
+            # while True:
+            #     if a + 4 > self.of_block[i] + self.of_block_size[i]:
+            #         break
+            for a in range(self.of_block[i], self.of_block[i] + self.of_block_size[i], 4):
 
-                p = bytes_to_int(self.data, a)
-                c = self.of_key[k] + ((p ^ 0x6C371625) - 0x6C371625)
+                #p = bytes_to_int(self.data, a)
+                p = struct.unpack("<I", self.data[a : a + 4])[0]
+                c = self.of_key[k] + ((p ^ self.of_key[total_keys - 1]) - self.of_key[total_keys - 1])
 
-                self.data[a] = c & 0x000000FF
-                self.data[a + 1] = zero_fill_right_shift(c, 8) & 0x000000FF
-                self.data[a + 2] = zero_fill_right_shift(c, 16) & 0x000000FF
-                self.data[a + 3] = zero_fill_right_shift(c, 24) & 0x000000FF
-
+                # self.data[a] = c & 0x000000FF
+                # self.data[a + 1] = zero_fill_right_shift(c, 8) & 0x000000FF
+                # self.data[a + 2] = zero_fill_right_shift(c, 16) & 0x000000FF
+                # self.data[a + 3] = zero_fill_right_shift(c, 24) & 0x000000FF
+                self.data[a : a + 4] = struct.pack("<I", c)
                 k += 1
-                if k == 367:
+                if k == total_keys:
                     k = 0
 
-                a += 4
+                #a += 4
 
     def checksums(self):
         """
         Set checksums.
         """
-        for i in range(0, 10):
+        for i in range(0, len(self.of_block)):
             checksum = 0
 
             for a in range(
                 self.of_block[i], self.of_block[i] + self.of_block_size[i], 4
             ):
-                checksum += bytes_to_int(self.data, a)
+                #checksum += bytes_to_int(self.data, a)
+                checksum += struct.unpack("<I",self.data[a : a + 4])[0]
 
-            self.data[self.of_block[i] - 8] = checksum & 0x000000FF
-            self.data[self.of_block[i] - 7] = (
-                zero_fill_right_shift(checksum, 8) & 0x000000FF
-            )
-            self.data[self.of_block[i] - 6] = (
-                zero_fill_right_shift(checksum, 16) & 0x000000FF
-            )
-            self.data[self.of_block[i] - 5] = (
-                zero_fill_right_shift(checksum, 24) & 0x000000FF
-            )
+            # self.data[self.of_block[i] - 8] = checksum & 0x000000FF
+            # self.data[self.of_block[i] - 7] = (
+            #     zero_fill_right_shift(checksum, 8) & 0x000000FF
+            # )
+            # self.data[self.of_block[i] - 6] = (
+            #     zero_fill_right_shift(checksum, 16) & 0x000000FF
+            # )
+            # self.data[self.of_block[i] - 5] = (
+            #     zero_fill_right_shift(checksum, 24) & 0x000000FF
+            # )
+            self.data[self.of_block[i] - 8 : self.of_block[i]] = struct.pack("<Q", checksum)
 
     def set_clubs(self):
         """
