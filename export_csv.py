@@ -75,10 +75,10 @@ def write_csv(filename, players, extra_stats_flag):
     if file:
         f = open(file, 'a',newline='', encoding='utf-8')
         csv_out=csv.writer(f)
-        #csv_out.writerows(players)
-        for player in players:
-            #print(player)
-            csv_out.writerow(player)
+        csv_out.writerows(players)
+        # for player in players:
+        #     #print(player)
+        #     csv_out.writerow(player)
         f.close()
         return True
     return False

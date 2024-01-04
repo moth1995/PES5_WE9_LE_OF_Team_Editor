@@ -193,12 +193,21 @@ def get_stats(player_id, of, rare_stats_flag):
     player_ss = get_value(of, player_id, 68-48, 4, 1, "SS")
     player_cf = get_value(of, player_id, 68-48, 5, 1, "CF")
     player_favSide = get_value(of, player_id, 68-48, 6, 3, "Fav side")
-    if player_favSide == 0:
-        player_favSide = "L"
-    elif player_favSide == 1:
-        player_favSide = "R"
-    else:
-        player_favSide = "B"
+
+    if player_foot == "R":
+        if player_favSide == 0:
+            player_favSide = "R"
+        elif player_favSide == 1:
+            player_favSide = "L"
+        else:
+            player_favSide = "B"
+    elif player_foot == "L":
+        if player_favSide == 0:
+            player_favSide = "L"
+        elif player_favSide == 1:
+            player_favSide = "R"
+        else:
+            player_favSide = "B"
 
     # Abilities
     player_wfa = get_value(of, player_id, 82-48, 5, 7, "W Foot Acc") + 1

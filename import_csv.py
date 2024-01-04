@@ -1,6 +1,6 @@
 import csv
 from tkinter import messagebox
-from player_data import set_value, set_name, set_shirt_name
+from player_data import set_value, set_name, set_shirt_name, get_value
 #from psd import import_stats_from_psd
 
 def load_csv(of, file):
@@ -183,12 +183,21 @@ def load_csv(of, file):
                         csv_favSide=(row[list_of_column_names.index('FAVOURED SIDE')])
                         # Here we limit the stat to already know konami range
                         if csv_favSide!="":
-                            if csv_favSide=="R":
-                                csv_favSide=0
-                            elif csv_favSide=="L":
-                                csv_favSide=1
-                            else:
-                                csv_favSide=2
+                            player_foot = get_value(of, player_id, 53-48, 0, 1, "Foot")
+                            if player_foot: # L
+                                if csv_favSide=="L":
+                                    csv_favSide=0
+                                elif csv_favSide=="R":
+                                    csv_favSide=1
+                                else:
+                                    csv_favSide=2
+                            else: # R
+                                if csv_favSide=="R":
+                                    csv_favSide=0
+                                elif csv_favSide=="L":
+                                    csv_favSide=1
+                                else:
+                                    csv_favSide=2
                             #print(player_id, csv_favSide)
                             set_value(of, player_id, 20, 6, 3, csv_favSide)                   
 
