@@ -170,17 +170,17 @@ class OptionFile:
                 #checksum += bytes_to_int(self.data, a)
                 checksum += struct.unpack("<I",self.data[a : a + 4])[0]
 
-            # self.data[self.of_block[i] - 8] = checksum & 0x000000FF
-            # self.data[self.of_block[i] - 7] = (
-            #     zero_fill_right_shift(checksum, 8) & 0x000000FF
-            # )
-            # self.data[self.of_block[i] - 6] = (
-            #     zero_fill_right_shift(checksum, 16) & 0x000000FF
-            # )
-            # self.data[self.of_block[i] - 5] = (
-            #     zero_fill_right_shift(checksum, 24) & 0x000000FF
-            # )
-            self.data[self.of_block[i] - 8 : self.of_block[i]] = struct.pack("<Q", checksum)
+            self.data[self.of_block[i] - 8] = checksum & 0x000000FF
+            self.data[self.of_block[i] - 7] = (
+                zero_fill_right_shift(checksum, 8) & 0x000000FF
+            )
+            self.data[self.of_block[i] - 6] = (
+                zero_fill_right_shift(checksum, 16) & 0x000000FF
+            )
+            self.data[self.of_block[i] - 5] = (
+                zero_fill_right_shift(checksum, 24) & 0x000000FF
+            )
+            #self.data[self.of_block[i] - 8 : self.of_block[i]] = struct.pack("<Q", checksum)
 
     def set_clubs(self):
         """
