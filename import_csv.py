@@ -1,7 +1,7 @@
 import csv
 from tkinter import messagebox
 from player_data import set_value, set_name, set_shirt_name
-from psd import import_stats_from_psd
+#from psd import import_stats_from_psd
 
 def load_csv(of, file):
     try:
@@ -9,7 +9,7 @@ def load_csv(of, file):
             # list to store the names of columns
             csv_reader = csv.reader(csvf, delimiter = ',')
             list_of_column_names = []
-            csv_psd_link = ""
+            # csv_psd_link = ""
           
             # loop to iterate thorugh the rows of csv 
             for row in csv_reader: 
@@ -1460,17 +1460,12 @@ def load_csv(of, file):
                         #print(player_id, csv_statEdited)
                         set_value(of, player_id, 39, 7, 1, csv_statEdited)
 
-                    if 'PSD' in list_of_column_names:
-                        csv_psd_link=(row[list_of_column_names.index('PSD')])
-                        # Here we limit the stat to already know konami range
-                        #if csv_statEdited<0:
-                        #    csv_statEdited=0
-                        #elif csv_statEdited>1:
-                        #    csv_statEdited=1
-                        if csv_psd_link !="":
-                            import_stats_from_psd(of, player_id, csv_psd_link)
-                    else:
-                        csv_psd_link = ""
+                    # if 'PSD' in list_of_column_names:
+                    #     csv_psd_link=(row[list_of_column_names.index('PSD')])
+                    #     if csv_psd_link !="":
+                    #         import_stats_from_psd(of, player_id, csv_psd_link)
+                    # else:
+                    #     csv_psd_link = ""
                     
                     # Here's a template in future case i need to add a new stat (which is very likely)
                     #if '' in list_of_column_names:
