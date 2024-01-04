@@ -1,6 +1,3 @@
-#import os
-#from editor.option_file import OptionFile
-
 def of_encrypter(temp_file, of):
 # Here we read decrypted Option File and copy all the data to the original Option File
     try:
