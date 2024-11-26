@@ -152,6 +152,33 @@ def save_btn_action():
     else:
         messagebox.showerror(title=appname,message="Error while saving, please run as admin")
 
+def load_team_kit_config():
+    import struct
+    team_id = team_kit_name_cmb.current() # team id
+    address = 845468 + 544 * (team_id - first_club_team_id) + 57
+    if team_id < first_club_team_id:
+        address = 822940 + 352 * team_id + 57
+    for i in range(4):
+        kit_license, _, model, _ =struct.unpack("<4B", of.data[address + 62 * i : address + 62 * i + 4])
+        print(kit_license, model)
+    print(address)
+    kit_license, _, model, _ = struct.unpack("<4B", of.data[address : address + 4])
+    print(kit_license, model)
+    team_license_cmb.current(kit_license)
+    team_model_cmb.current(model)
+
+def apply_team_kit_config():
+    kit_license = team_license_cmb.current()
+    model = team_model_cmb.current()
+    team_id = team_kit_name_cmb.current() # team id
+    address = 845468 + 544 * (team_id - first_club_team_id) + 57 # license offset
+    if team_id < first_club_team_id:
+        address = 822940 + 352 * team_id + 57
+    for i in range(4):
+        of.data[address + 62 * i] = kit_license
+        of.data[address + 62 * i + 2] = model
+
+
 def report_callback_exception(*args):
     err = traceback.format_exception(*args)
     messagebox.showerror(appname + " Error Message", " ".join(err))
@@ -179,6 +206,7 @@ if __name__ == "__main__":
     root.filename = filedialog.askopenfilename(initialdir=".",title="Select your option file", filetypes=(("KONAMI-WIN32PES5OPT","KONAMI-WIN32PES5OPT"),("KONAMI-WIN32WE9UOPT","KONAMI-WIN32WE9UOPT"),("KONAMI-WIN32WE9KOPT","KONAMI-WIN32WE9KOPT")))
     #root.filename = "KONAMI-WIN32PES5OPT"
     #root.filename = r"C:\Users\marco\Documents\KONAMI\Pro Evolution Soccer 5\save\folder1\KONAMI-WIN32PES5OPT"
+    first_club_team_id = 64
     if root.filename!="":
         of = OptionFile(root.filename)
         '''
@@ -248,6 +276,7 @@ if __name__ == "__main__":
         swap_teams_tab=Frame(tabs_container, width=w, height=h)
         csv_tab=Frame(tabs_container, width=w, height=h)
         extra_tab=Frame(tabs_container, width=w, height=h)
+        kits_tab=Frame(tabs_container, width=w, height=h)
         copyright_lbl=Label(root, text="By PES Indie Team")
         thanks_lbl=Label(root, text="Thanks to PeterC10 for python de/encrypt code for OF\nand also mattmid who help me with many player attributes")
 
@@ -306,6 +335,26 @@ if __name__ == "__main__":
         exp_formation_btn = Button(extra_tab, text="Export team\nformation", command=lambda: export_formation_btn_action())
         imp_formation_btn = Button(extra_tab, text="Import team\nformation", command=lambda: import_formation_btn_action())
 
+        #kits tab 
+        KIT_TAB_PADX = 50
+        KIT_TAB_PADY = 20
+        team_kit_name_lbl=Label(kits_tab, text="Team")
+        team_kit_name_lbl.grid(row=0, column=0, padx=KIT_TAB_PADX, pady=KIT_TAB_PADY)
+        team_kit_name_cmb=ttk.Combobox(kits_tab, state="readonly", value=teams_list, width=30)
+        team_kit_name_cmb.bind("<<ComboboxSelected>>", lambda e : load_team_kit_config() )
+        team_kit_name_cmb.grid(row=0, column=1)
+        team_license_lbl=Label(kits_tab, text="License Type")
+        team_license_lbl.grid(row=1, column=0, padx=KIT_TAB_PADX, pady=KIT_TAB_PADY)
+        team_license_cmb = ttk.Combobox(kits_tab, state="readonly", value = ["No License", "License", "License + Edit"], width=14)
+        team_license_cmb.grid(row=1, column=1)
+        team_model_lbl=Label(kits_tab, text="Model")
+        team_model_lbl.grid(row=2, column=0, padx=KIT_TAB_PADX, pady=KIT_TAB_PADY)
+        team_model_cmb = ttk.Combobox(kits_tab, state="readonly", value = list(range(256)), width=14)
+        team_model_cmb.grid(row=2, column=1)
+        apply_kits_changes_btn=Button(kits_tab, text="Apply", command=lambda: apply_team_kit_config())
+        apply_kits_changes_btn.grid(row=3, column=0, columnspan=2, padx=KIT_TAB_PADX, pady=KIT_TAB_PADY)
+        save_kits_changes_btn=Button(kits_tab, text="Save to OF", command=lambda: save_btn_action())
+        save_kits_changes_btn.grid(row=4, column=0, columnspan=2, padx=KIT_TAB_PADX, pady=KIT_TAB_PADY)
 
 
         #Swap team tab placing
@@ -346,10 +395,12 @@ if __name__ == "__main__":
         swap_teams_tab.pack(fill="both", expand=1)
         csv_tab.pack(fill="both", expand=1)
         extra_tab.pack(fill="both", expand=1)
+        kits_tab.pack(fill="both", expand=1)
 
         tabs_container.add(swap_teams_tab, text="Swap Teams")
         tabs_container.add(csv_tab, text="Export/Import CSV")
         tabs_container.add(extra_tab, text="Extra")
+        tabs_container.add(kits_tab, text="Kits")
 
         root.resizable(False, False)
         root.mainloop() 
