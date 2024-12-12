@@ -2,6 +2,7 @@ import csv
 from tkinter import messagebox
 from player_data import set_value, set_name, set_shirt_name, get_value
 #from psd import import_stats_from_psd
+import traceback
 
 def load_csv(of, file):
     try:
@@ -251,7 +252,7 @@ def load_csv(of, file):
                         #elif csv_sb>1:
                         #    csv_sb=1
                         #print(player_id, csv_sb)
-                        if csv_cbt!="":
+                        if csv_sb!="":
                             try:
                                 set_value(of, player_id, 12, 5, 1, int(csv_sb))
                             except (ValueError, TypeError) as e:
@@ -1489,6 +1490,7 @@ def load_csv(of, file):
     except Exception as e: 
         #messagebox.showerror(title="Error", message=e)
         print(e)
+        print(traceback.format_exc())
         return False
 
 nationalities = ["Austria", "Belgium", "Bulgaria", "Croatia", "Czech Republic", "Denmark", "England", "Finland", "France", "Germany", "Greece", 
